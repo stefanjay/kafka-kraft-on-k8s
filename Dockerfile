@@ -22,3 +22,4 @@ RUN wget -O /tmp/kafka_${SCALA_VERSION}-${KAFKA_VERSION}.tgz \
 
 COPY --chown=kafka:kafka ./entrypoint.sh /
 ENTRYPOINT ["/bin/bash", "/entrypoint.sh"]
+
