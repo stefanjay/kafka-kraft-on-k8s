@@ -7,10 +7,6 @@ More info can be found in the official Apache Kafka docs https://kafka.apache.or
 
 #
 ## Table of Content
-- [How to deploy Kafka "KRaft" on Kubernetes](#how-to-deploy-kafka-kraft-on-kubernetes)
-- [](#)
-  - [Table of Content](#table-of-content)
-- [](#-1)
   - [Author](#author)
   - [Benefits](#benefits)
   - [Environment variables](#environment-variables)
