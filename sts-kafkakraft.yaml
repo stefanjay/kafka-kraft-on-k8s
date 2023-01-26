@@ -1,0 +1,83 @@
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: kafka
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: kafka-svc
+  labels:
+    app: kafkakraft
+  namespace: kafka
+spec:
+  clusterIP: None
+  ports:
+    - name: '9092'
+      port: 9092
+      protocol: TCP
+      targetPort: 9092
+  selector:
+    app: kafkakraft
+
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: kafka
+  labels:
+    app: kafkakraft
+  namespace: kafka
+spec:
+  selector:
+    matchLabels:
+      app: kafkakraft
+  serviceName: kafka-svc
+  replicas: 3
+  template:
+    metadata:
+      labels:
+        app: kafkakraft
+    spec:
+    ### TODO: add JMX plugin to gather metrics
+      containers:
+        - name: kafka-container
+          image: myrepo/kafkakraft:3.3.2
+          imagePullPolicy: Always
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: false
+            runAsNonRoot: true
+            runAsUser: 1001
+          ports:
+            - containerPort: 9092
+            - containerPort: 9093
+          env:
+            - name: REPLICAS
+              value: '3'
+            - name: SERVICE
+              value: kafka-svc
+            - name: NAMESPACE
+              value: kafka
+            - name: SHARE_DIR
+              value: /mnt/kafka
+            - name: CLUSTER_ID
+              value: Y5SgRE0zp9AusfyPBDNyON
+            - name: DEFAULT_REPLICATION_FACTOR
+              value: '3'
+            - name: DEFAULT_MIN_INSYNC_REPLICAS
+              value: '2'
+          volumeMounts:
+          - name: kafka-storage-data
+            mountPath: /mnt/kafka
+  volumeClaimTemplates:
+  - metadata:
+      name: kafka-storage-data
+    spec:
+      accessModes: [ ReadWriteMany ]
+      storageClassName: azurefile-csi-premium
+      resources:
+        requests:
+          storage: 100Gi
