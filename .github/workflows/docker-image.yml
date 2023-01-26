@@ -2,12 +2,14 @@ name: ci
 
 on:
   push:
-    branches:
-      - 'master'
+    branches: [ "master" ]
+  pull_request:
+    branches: [ "master" ]
 
 jobs:
   docker:
     runs-on: ubuntu-latest
+    environment: build
     steps:
       -
         name: Set up QEMU
