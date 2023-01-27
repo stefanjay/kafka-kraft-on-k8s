@@ -1,4 +1,4 @@
-name: build and push on merge
+name: merge tests
 
 on:
   pull_request:
