@@ -22,7 +22,6 @@ spec:
   selector:
     app: kafkakraft
 
-
 ---
 apiVersion: apps/v1
 kind: StatefulSet
