@@ -76,9 +76,11 @@ a value for the minimum insync replicas
 #1b  push image to registry
   > docker push myregistry/kafkakraft:<tag>
 
-#2   modify ´deploy-kafkakraft.yaml´
+#2   modify manifest
+  > vi sts-kafkakraft.yaml
+
 #3   deploy
-  > k apply -f deploy-kafkakraft.yaml
+  > k apply -f sts-kafkakraft.yaml
 
 #4   watch deploy and check logs
   > k -n kafka get pod -w
