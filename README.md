@@ -10,6 +10,10 @@ More info can be found in the official Apache Kafka docs https://kafka.apache.or
 
 #
 ## Table of Content
+- [KRaft "Kafka Raft" on Kubernetes](#kraft-kafka-raft-on-kubernetes)
+- [](#)
+  - [Table of Content](#table-of-content)
+- [](#-1)
   - [Author](#author)
   - [Benefits](#benefits)
   - [Environment variables](#environment-variables)
@@ -86,6 +90,9 @@ a value for the minimum insync replicas
   > k -n kafka get pod -w
 
   ## Changelog
+v0.4a
+- bumping to kafka v3.4.0
+
 v0.4
 - bugfixed nonroot app-dir to /opt/kafka
 - kafka data logdir in /mnt/kafka as persistentvolume
