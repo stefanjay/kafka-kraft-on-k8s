@@ -11,9 +11,7 @@ More info can be found in the official Apache Kafka docs https://kafka.apache.or
 #
 ## Table of Content
 - [KRaft "Kafka Raft" on Kubernetes](#kraft-kafka-raft-on-kubernetes)
-- [](#)
-  - [Table of Content](#table-of-content)
-- [](#-1)
+
   - [Author](#author)
   - [Benefits](#benefits)
   - [Environment variables](#environment-variables)
