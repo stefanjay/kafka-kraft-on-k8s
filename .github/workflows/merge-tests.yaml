@@ -29,7 +29,6 @@ jobs:
       - name: DryRun docker build and push for KafkaKRaft in ./
         uses: docker/build-push-action@v3
         with:
-          context: .
           push: false
           tags: kafkakraft/kafkakraft:latest
 
