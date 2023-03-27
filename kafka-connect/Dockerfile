@@ -12,7 +12,7 @@ RUN install -d -o kafka -g kafka /opt
 
 USER kafka
 
-LABEL name="kafkakraft" version=${KAFKA_VERSION}
+LABEL name="kafka-connect" version=${KAFKA_VERSION}
 
 RUN wget -O /tmp/kafka_${SCALA_VERSION}-${KAFKA_VERSION}.tgz \
     https://downloads.apache.org/kafka/${KAFKA_VERSION}/kafka_${SCALA_VERSION}-${KAFKA_VERSION}.tgz \
@@ -20,6 +20,7 @@ RUN wget -O /tmp/kafka_${SCALA_VERSION}-${KAFKA_VERSION}.tgz \
  && rm /tmp/kafka_${SCALA_VERSION}-${KAFKA_VERSION}.tgz \
  && ln -s /opt/kafka_${SCALA_VERSION}-${KAFKA_VERSION} ${KAFKA_HOME}
 
-COPY --chown=kafka:kafka ./entrypoint.sh /
-ENTRYPOINT ["/bin/bash", "/entrypoint.sh"]
+COPY connect-distributed.properties  /opt/kafka/config/connect-distributed.properties
 
+COPY --chown=kafka:kafka ./entrypoint-connect.sh /
+ENTRYPOINT ["/bin/bash", ,"-c" "connect-distributed.sh /opt/kafka/config/connect-distributed.properties"]

@@ -9,3 +9,7 @@ updates:
     directory: "/" # Location of package manifests
     schedule:
       interval: "daily"
+  - package-ecosystem: "docker" # See documentation for possible values
+    directory: "/kafka-connect" # Location of package manifests
+    schedule:
+      interval: "daily"
