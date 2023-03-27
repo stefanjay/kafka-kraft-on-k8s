@@ -26,11 +26,19 @@ jobs:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
-      - name: DryRun docker build and push
+      - name: DryRun docker build and push for KafkaKRaft in ./
         uses: docker/build-push-action@v3
         with:
+          context: .
+          push: false
+          tags: kafkakraft/kafkakraft:latest
+
+      - name: DryRun docker build and push for Kafka-Connect in ./kafka-connect
+        uses: docker/build-push-action@v3
+        with:
+          context: ./kafka-connect
           push: false
           tags: kafkakraft/kafkakraft:latest
           
       - name: Printout status
-        run: echo "Image is buildable and can be pushed to registry."
+        run: echo "Images are buildable and can be pushed to registry."
