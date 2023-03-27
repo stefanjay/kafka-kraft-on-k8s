@@ -4,20 +4,17 @@
 # KRaft "Kafka Raft" on Kubernetes
 Apache Kafka starting in version 3.3 is using the Raft metadata protocol to abandon the appendage ZooKeeper overhead to control the cluster's health.
 
-## Adds:
-- Kafka in KRaft mode (3 nodes) with a Kafka Connect Cluster (3 nodes)
-
-<img src="https://images.contentful.com/gt6dp23g0g38/5ssqb8kUN6Lq5lR1EZdCX1/2a28415f8718dfec9edc345d9914dfec/new-quorum-controller-1536x817.png" width = 500>
+<p float="left">
+  <img src="https://images.contentful.com/gt6dp23g0g38/5ssqb8kUN6Lq5lR1EZdCX1/2a28415f8718dfec9edc345d9914dfec/new-quorum-controller-1536x817.png" width="500" />
+  <img src="https://images.ctfassets.net/gt6dp23g0g38/5vGOBwLiNaRedNyB0yaiIu/529a29a059d8971541309f7f57502dd2/ingest-data-upstream-systems.jpg" width="480" /> 
+</p>
 
 More info can be found in the official Apache Kafka docs https://kafka.apache.org/documentation/#kraft
 
 #
 ## Table of Content
 - [KRaft "Kafka Raft" on Kubernetes](#kraft-kafka-raft-on-kubernetes)
-  - [Adds:](#adds)
-- [](#)
   - [Table of Content](#table-of-content)
-- [](#-1)
   - [Author](#author)
   - [Benefits](#benefits)
   - [Environment variables](#environment-variables)
@@ -37,6 +34,9 @@ Stefan Jährling @ System Vertrieb Alexander GmbH
 - clustered with at least 3 nodes
 - Kafka logdata on persistent volume /node
 - environment variables in manifest
+- up-to-date light-weight Kafka Connect Cluster
+- add connectors as easy as build an image
+- run´s in any containerized environment
 
 ## Environment variables
 ```yaml
