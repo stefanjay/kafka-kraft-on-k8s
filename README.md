@@ -4,6 +4,9 @@
 # KRaft "Kafka Raft" on Kubernetes
 Apache Kafka starting in version 3.3 is using the Raft metadata protocol to abandon the appendage ZooKeeper overhead to control the cluster's health.
 
+## Adds:
+- Kafka in KRaft mode (3 nodes) with a Kafka Connect Cluster (3 nodes)
+
 <img src="https://images.contentful.com/gt6dp23g0g38/5ssqb8kUN6Lq5lR1EZdCX1/2a28415f8718dfec9edc345d9914dfec/new-quorum-controller-1536x817.png" width = 500>
 
 More info can be found in the official Apache Kafka docs https://kafka.apache.org/documentation/#kraft
@@ -11,7 +14,10 @@ More info can be found in the official Apache Kafka docs https://kafka.apache.or
 #
 ## Table of Content
 - [KRaft "Kafka Raft" on Kubernetes](#kraft-kafka-raft-on-kubernetes)
-
+  - [Adds:](#adds)
+- [](#)
+  - [Table of Content](#table-of-content)
+- [](#-1)
   - [Author](#author)
   - [Benefits](#benefits)
   - [Environment variables](#environment-variables)
@@ -70,24 +76,26 @@ a value for the minimum insync replicas
   > tar xzf kafka-kraft.tar.gz
 
 #1   build docker image
-  > docker build -t kafkakraft:<tag> . 
-
-#1a  tag image
-  > docker tag kafkakraft:<tag> myregistry/kafkakraft:<tag>
+  > docker build -t myregistry/kafkakraft:<tag> . 
+  > docker build -t myregistry/kafka-connect:<tag> ./kafka-connect/ 
 
 #1b  push image to registry
   > docker push myregistry/kafkakraft:<tag>
 
-#2   modify manifest
+#2   modify manifest to your needs
   > vi sts-kafkakraft.yaml
 
 #3   deploy
-  > k apply -f sts-kafkakraft.yaml
+  > k apply -f deploy-kafka.yaml
 
 #4   watch deploy and check logs
   > k -n kafka get pod -w
 
   ## Changelog
+v0.5
+- added kafka-connect
+- updated github actions
+
 v0.4a
 - bumping to kafka v3.4.0
 
