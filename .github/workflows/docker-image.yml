@@ -25,7 +25,6 @@ jobs:
       - name: Build and push KafkaKRaft
         uses: docker/build-push-action@v3
         with:
-          context: .
           file: ./Dockerfile
           push: true
           tags: kafkakraft/kafkakraft:latest
@@ -33,7 +32,6 @@ jobs:
       - name: Build and push Kafka-Connect
         uses: docker/build-push-action@v3
         with:
-          context: .
           file: ./kafka-connect/Dockerfile
           push: true
           tags: kafkakraft/kafka-connect:latest
