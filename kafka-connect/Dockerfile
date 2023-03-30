@@ -20,7 +20,7 @@ RUN wget -O /tmp/kafka_${SCALA_VERSION}-${KAFKA_VERSION}.tgz \
  && rm /tmp/kafka_${SCALA_VERSION}-${KAFKA_VERSION}.tgz \
  && ln -s /opt/kafka_${SCALA_VERSION}-${KAFKA_VERSION} ${KAFKA_HOME}
 
-COPY connect-distributed.properties  /opt/kafka/config/connect-distributed.properties
+COPY ./kafka-connect/connect-distributed.properties  /opt/kafka/config/connect-distributed.properties
 
-COPY entrypoint.sh /
+COPY ./kafka-connect/entrypoint.sh /
 ENTRYPOINT ["/bin/bash", "/entrypoint.sh"]
