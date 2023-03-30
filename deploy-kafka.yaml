@@ -19,14 +19,26 @@ spec:
       port: 9092
       protocol: TCP
       targetPort: 9092
-      selector:
-        app: kafkakraft
+  selector:
+    app: kafkakraft
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: kafka-connect-svc
+  labels:
+    app: kafka-connect-svc
+  namespace: kafka
+spec:
+  clusterIP: None
+  ports:
     - name: '8083'
       port: 8083
       protocol: TCP
       targetPort: 8083
-      selector:
-        app: kafka-connect
+  selector:
+    app: kafka-connect
 
 ---
 apiVersion: apps/v1
@@ -100,7 +112,7 @@ spec:
   selector:
     matchLabels:
       app: kafka-connect
-  serviceName: kafka-svc
+  serviceName: kafka-connet-svc
   replicas: 3
   template:
     metadata:
