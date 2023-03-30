@@ -62,7 +62,7 @@ spec:
     ### TODO: add JMX plugin to gather metrics
       containers:
         - name: kafka-container
-          image: myrepo/kafkakraft:3.4.0
+          image: kafkakraft/kafkakraft:latest
           imagePullPolicy: Always
           securityContext:
             allowPrivilegeEscalation: false
@@ -122,7 +122,7 @@ spec:
     ### TODO: add JMX plugin to gather metrics
       containers:
         - name: kafka-connect-container
-          image: myrepo/kafka-connect:3.4.0
+          image: kafkakraft/kafka-connect:latest
           imagePullPolicy: Always
           ports:
             - containerPort: 8083
