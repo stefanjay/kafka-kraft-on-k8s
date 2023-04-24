@@ -82,7 +82,7 @@ spec:
             - name: SHARE_DIR
               value: /mnt/kafka
             - name: CLUSTER_ID
-              value: Y5SgRE0zp9AusfyPBDNyON
+              value: ys-SgRE0zp9AusfyPBDNyONwe
             - name: DEFAULT_REPLICATION_FACTOR
               value: '3'
             - name: DEFAULT_MIN_INSYNC_REPLICAS
