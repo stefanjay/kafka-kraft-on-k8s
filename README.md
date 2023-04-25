@@ -59,7 +59,7 @@ here you need to specify the path for the log storage
 
 choose a cluster UUID that every node uses to be able to join
   - name: CLUSTER_ID
-    value: Y5SgRE0zp9AusfyPBDNyON
+    value: ys-gRE0zp9AusfyPBDNyON # $ kafka-storage.sh random-uuid; 16 bytes, see docs: https://kafka.apache.org/33/documentation.html#quickstart_startserver
 
 choose the default replicatin factor
   - name: DEFAULT_REPLICATION_FACTOR
