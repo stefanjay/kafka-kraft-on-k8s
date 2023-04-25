@@ -23,24 +23,6 @@ spec:
     app: kafkakraft
 
 ---
-apiVersion: v1
-kind: Service
-metadata:
-  name: kafka-connect-svc
-  labels:
-    app: kafka-connect-svc
-  namespace: kafka
-spec:
-  clusterIP: None
-  ports:
-    - name: '8083'
-      port: 8083
-      protocol: TCP
-      targetPort: 8083
-  selector:
-    app: kafka-connect
-
----
 apiVersion: apps/v1
 kind: StatefulSet
 metadata:
@@ -94,53 +76,8 @@ spec:
   - metadata:
       name: kafka-storage-data
     spec:
-      accessModes: [ ReadWriteMany ]
-      storageClassName: azurefile-csi-premium
+      accessModes:
+        - "ReadWriteOnce"
       resources:
         requests:
           storage: 100Gi
-
----
-apiVersion: apps/v1
-kind: StatefulSet
-metadata:
-  name: kafka-connect
-  labels:
-    app: kafka-connect
-  namespace: kafka
-spec:
-  selector:
-    matchLabels:
-      app: kafka-connect
-  serviceName: kafka-connet-svc
-  replicas: 3
-  template:
-    metadata:
-      labels:
-        app: kafka-connect
-    spec:
-    ### TODO: add JMX plugin to gather metrics
-      containers:
-        - name: kafka-connect-container
-          image: kafkakraft/kafka-connect:latest
-          imagePullPolicy: Always
-          ports:
-            - containerPort: 8083
-          securityContext:
-            allowPrivilegeEscalation: false
-            readOnlyRootFilesystem: false
-            runAsNonRoot: true
-            runAsUser: 1001
-          env: []
-          volumeMounts:
-          - name: kafka-connect-storage-data
-            mountPath: /mnt/kafka
-  volumeClaimTemplates:
-  - metadata:
-      name: kafka-connect-storage-data
-    spec:
-      accessModes: [ ReadWriteMany ]
-      storageClassName: azurefile-csi-premium
-      resources:
-        requests:
-          storage: 10Gi
