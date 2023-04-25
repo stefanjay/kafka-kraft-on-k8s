@@ -1,6 +1,6 @@
-FROM openjdk:21-bullseye
+FROM openjdk:17-bullseye
 
-ENV KAFKA_VERSION=3.4.0
+ENV KAFKA_VERSION=3.3.2
 ENV SCALA_VERSION=2.13
 ENV KAFKA_HOME=/opt/kafka
 ENV PATH=${PATH}:${KAFKA_HOME}/bin
@@ -21,5 +21,6 @@ RUN wget -O /tmp/kafka_${SCALA_VERSION}-${KAFKA_VERSION}.tgz \
  && ln -s /opt/kafka_${SCALA_VERSION}-${KAFKA_VERSION} ${KAFKA_HOME}
 
 COPY --chown=kafka:kafka ./entrypoint.sh /
-ENTRYPOINT ["/bin/bash", "/entrypoint.sh"]
+RUN ["chmod", "+x", "/entrypoint.sh"]
+ENTRYPOINT ["/entrypoint.sh"]
 
