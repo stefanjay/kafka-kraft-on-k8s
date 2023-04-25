@@ -92,6 +92,9 @@ a value for the minimum insync replicas
   > k -n kafka get pod -w
 
   ## Changelog
+v0.5a
+- due to a unfixed bug, backported to kafka v3.3.2
+  
 v0.5
 - added kafka-connect
 - updated github actions
