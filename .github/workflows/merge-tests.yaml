@@ -38,14 +38,7 @@ jobs:
         with:
           context: ./kafka-connect
           push: false
-          tags: kafkakraft/kafkakraft:latest
-
-      - name: DryRun docker build and push for Kafka-Connect in ./kafka-connect
-        uses: docker/build-push-action@v3
-        with:
-          context: ./kafka-connect
-          push: false
-          tags: kafkakraft/kafkakraft:latest
+          tags: kafkakraft/kafkakraft-connect:latest
           
       - name: Printout status
         run: echo "Images are buildable and can be pushed to registry."
