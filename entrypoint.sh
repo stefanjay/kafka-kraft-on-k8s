@@ -19,7 +19,12 @@ echo $CLUSTER_ID > $SHARE_DIR/cluster_id
 # debug for shell
 # sleep 3600
 
+# adding setting to reflect the setting from
+# deploy-kafka.yaml
+echo "default.replication.factor=$KAFKA_DEFAULT_REPLICATION_FACTOR" >> /opt/kafka/config/kraft/server.properties
+
 sed -e "s+^node.id=.*+node.id=$NODE_ID+" \
+-e "s+^num.partitions=.*+num.partitions=$KAFKA_NUM_PARTITIONS+" \
 -e "s+^controller.quorum.voters=.*+controller.quorum.voters=$CONTROLLER_QUORUM_VOTERS+" \
 -e "s+^listeners=.*+listeners=$LISTENERS+" \
 -e "s+^advertised.listeners=.*+advertised.listeners=$ADVERTISED_LISTENERS+" \
