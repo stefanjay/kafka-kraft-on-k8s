@@ -93,7 +93,7 @@ a value for the minimum insync replicas
 
   ## Changelog
 v0.5a
-- due to a unfixed bug, backported to kafka v3.3.2
+- due to an unfixed bug, backported to kafka v3.3.2
   
 v0.5
 - added kafka-connect
