@@ -1,4 +1,4 @@
-FROM openjdk:21-bullseye
+FROM openjdk:22-bullseye
 
 ENV KAFKA_VERSION=3.4.0
 ENV SCALA_VERSION=2.13
