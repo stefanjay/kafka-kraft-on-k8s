@@ -46,11 +46,11 @@ spec:
         - name: kafka-container
           image: kafkakraft/kafkakraft:latest
           imagePullPolicy: Always
-          securityContext:
-            allowPrivilegeEscalation: false
-            readOnlyRootFilesystem: false
-            runAsNonRoot: true
-            runAsUser: 1001
+          # securityContext:                        # deactivated - issue can be tracked here: https://github.com/stefanjay/kafka-kraft-on-k8s/issues/23
+          #   allowPrivilegeEscalation: false
+          #   readOnlyRootFilesystem: false
+          #   runAsNonRoot: true
+          #   runAsUser: 1001
           ports:
             - containerPort: 9092
             - containerPort: 9093
