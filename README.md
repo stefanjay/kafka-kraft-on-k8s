@@ -92,6 +92,10 @@ a value for the minimum insync replicas
   > k -n kafka get pod -w
 
   ## Changelog
+v0.6
+- bumped kafka to v3.6.0
+- switched back to root user which runs kafka due to compatibility and open issue
+
 v0.5a
 - due to an unfixed bug, backported to kafka v3.3.2
   
