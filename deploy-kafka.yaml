@@ -11,14 +11,21 @@ metadata:
   name: kafka-svc
   labels:
     app: kafka-svc
+  annotations:
+    "prometheus.io/scrape": "true"
+    "prometheus.io/port": "9000"
   namespace: kafka
 spec:
-  clusterIP: None
+  type: ClusterIP
   ports:
     - name: '9092'
       port: 9092
       protocol: TCP
       targetPort: 9092
+    - name: '9000'
+      port: 9000
+      protocol: TCP
+      targetPort: 9000
   selector:
     app: kafkakraft
 
@@ -41,16 +48,15 @@ spec:
       labels:
         app: kafkakraft
     spec:
-    ### TODO: add JMX plugin to gather metrics
+      securityContext:
+        runAsNonRoot: true
+        fsGroup: 1001
+        runAsUser: 1001
+        runAsGroup: 1001
       containers:
         - name: kafka-container
-          image: kafkakraft/kafkakraft:latest
+          image: kafkakraft/kafkakraft:3.6.0
           imagePullPolicy: Always
-          # securityContext:                        # deactivated - issue can be tracked here: https://github.com/stefanjay/kafka-kraft-on-k8s/issues/23
-          #   allowPrivilegeEscalation: false
-          #   readOnlyRootFilesystem: false
-          #   runAsNonRoot: true
-          #   runAsUser: 1001
           ports:
             - containerPort: 9092
             - containerPort: 9093
@@ -64,20 +70,22 @@ spec:
             - name: SHARE_DIR
               value: /mnt/kafka
             - name: CLUSTER_ID
-              value: jSos9MFXTo6_3BOAj8mOcQ
-            - name: DEFAULT_REPLICATION_FACTOR
-              value: '3'
+              value: QwjfU6MPQ_CMdFsbCx7EGg
+# FIXME:    # - name: DEFAULT_REPLICATION_FACTOR
+            #   value: '3'
             - name: DEFAULT_MIN_INSYNC_REPLICAS
               value: '2'
+            - name: KAFKA_NUM_PARTITIONS
+              value: '1'
           volumeMounts:
-          - name: kafka-storage-data
-            mountPath: /mnt/kafka
+            - name: kafka-storage-data
+              mountPath: /mnt/kafka
   volumeClaimTemplates:
-  - metadata:
-      name: kafka-storage-data
-    spec:
-      accessModes:
-        - "ReadWriteOnce"
-      resources:
-        requests:
-          storage: 100Gi
+    - metadata:
+        name: kafka-storage-data
+      spec:
+        accessModes:
+          - "ReadWriteOnce"
+        resources:
+          requests:
+            storage: 100Gi
