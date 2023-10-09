@@ -1,4 +1,4 @@
-FROM openjdk:21-bullseye
+FROM openjdk:22-bookworm
 
 ENV KAFKA_VERSION=3.6.0
 ENV SCALA_VERSION=2.13
@@ -20,7 +20,12 @@ RUN wget -O /tmp/kafka_${SCALA_VERSION}-${KAFKA_VERSION}.tgz \
  && rm /tmp/kafka_${SCALA_VERSION}-${KAFKA_VERSION}.tgz \
  && ln -s /opt/kafka_${SCALA_VERSION}-${KAFKA_VERSION} ${KAFKA_HOME}
 
-COPY ./kafka-connect/connect-distributed.properties  /opt/kafka/config/connect-distributed.properties
+COPY ./connect-distributed.properties  /opt/kafka/config/connect-distributed.properties
 
-COPY ./kafka-connect/entrypoint.sh /
-ENTRYPOINT ["/bin/bash", "/entrypoint.sh"]
+COPY ./jmx-exporter-config.yaml /opt/jmx-exporter-config.yaml
+RUN wget https://repo1.maven.org/maven2/io/prometheus/jmx/jmx_prometheus_javaagent/0.17.2/jmx_prometheus_javaagent-0.17.2.jar -O /opt/jmx_prometheus_javaagent-0.17.2.jar
+ENV KAFKA_OPTS="-javaagent:/opt/jmx_prometheus_javaagent-0.17.2.jar=9000:/opt/jmx-exporter-config.yaml"
+
+COPY  --chown=kafka:kafka ./entrypoint.sh /
+RUN ["chmod", "+x", "/entrypoint.sh"]
+ENTRYPOINT ["/entrypoint.sh"]

@@ -6,6 +6,9 @@ metadata:
   labels:
     app: kafka-connect-svc
   namespace: kafka
+  annotations:
+    "prometheus.io/scrape": "true"
+    "prometheus.io/port": "9000"
 spec:
   clusterIP: None
   ports:
@@ -13,6 +16,10 @@ spec:
       port: 8083
       protocol: TCP
       targetPort: 8083
+    - name: '9000'
+      port: 9000
+      protocol: TCP
+      targetPort: 9000
   selector:
     app: kafka-connect
 
@@ -38,7 +45,7 @@ spec:
     ### TODO: add JMX plugin to gather metrics
       containers:
         - name: kafka-connect-container
-          image: kafkakraft/kafkakraft-connect:3.4.0
+          image: kafkakraft/kafkakraft-connect:3.6.0
           imagePullPolicy: Always
           ports:
             - containerPort: 8083
