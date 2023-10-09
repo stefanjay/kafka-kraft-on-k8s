@@ -91,6 +91,12 @@ Stefan Jährling @ System Vertrieb Alexander GmbH
   > k -n kafka get pod -w
 
   ## Changelog
+v0.7
+- fixed bug where kafka run as nonroot user in some circumstances
+- bumped kafka-connect to 3.6.0
+- bumped base image to openjdk.22-bookworm
+- open fixme for DEFAULT_REPLICATION_FACTOR
+  
 v0.6
 - bumped kafka to v3.6.0
 - switched back to root user which runs kafka due to compatibility and open issue
