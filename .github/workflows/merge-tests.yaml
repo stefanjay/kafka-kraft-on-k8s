@@ -29,15 +29,15 @@ jobs:
       - name: DryRun docker build and push for KafkaKRaft in ./
         uses: docker/build-push-action@v3
         with:
-          context: .
           push: false
+          file: ./Dockerfile
           tags: kafkakraft/kafkakraft:latest
 
       - name: DryRun docker build and push for Kafka-Connect in ./kafka-connect
         uses: docker/build-push-action@v3
         with:
-          context: ./kafka-connect
           push: false
+          file: ./kafka-connect/Dockerfile
           tags: kafkakraft/kafkakraft-connect:latest
           
       - name: Printout status
