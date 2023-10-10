@@ -91,6 +91,12 @@ Stefan Jährling @ System Vertrieb Alexander GmbH
   > k -n kafka get pod -w
 
   ## Changelog
+v0.7a
+- fixed kafkaconnect
+- minor changes in manifests
+- fixed replication factor
+- added topic autocreation env
+
 v0.7
 - fixed bug where kafka run as nonroot user in some circumstances
 - bumped kafka-connect to 3.6.0
