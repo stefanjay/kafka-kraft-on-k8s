@@ -12,7 +12,7 @@ RUN install -d -o kafka -g kafka /opt
 
 USER kafka
 
-LABEL name="kafka-connect" version=${KAFKA_VERSION}
+LABEL name="kafkakraft-connect" version=${KAFKA_VERSION}
 
 RUN wget -O /tmp/kafka_${SCALA_VERSION}-${KAFKA_VERSION}.tgz \
     https://downloads.apache.org/kafka/${KAFKA_VERSION}/kafka_${SCALA_VERSION}-${KAFKA_VERSION}.tgz \

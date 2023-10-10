@@ -56,15 +56,17 @@ Stefan Jährling @ System Vertrieb Alexander GmbH
   - name: CLUSTER_ID
     value: ys-gRE0zp9AusfyPBDNyON # $ kafka-storage.sh random-uuid; 16 bytes, see docs: https://kafka.apache.org/33/documentation.html#quickstart_startserver
 
-  #FIXME:
-  #  - name: DEFAULT_REPLICATION_FACTOR
-  #   value: '3'
+   - name: DEFAULT_REPLICATION_FACTOR
+    value: '3'
 
   - name: DEFAULT_MIN_INSYNC_REPLICAS
     value: '2'
 
   - name: KAFKA_NUM_PARTITIONS
-    value: '1'
+    value: '8'
+
+  - name: AUTO_CREATE_TOPICS_ENABLE
+    value: 'yes'
 ```
 
 ## HowTo
@@ -94,7 +96,7 @@ v0.7
 - bumped kafka-connect to 3.6.0
 - bumped base image to openjdk.22-bookworm
 - open fixme for DEFAULT_REPLICATION_FACTOR
-  
+
 v0.6
 - bumped kafka to v3.6.0
 - switched back to root user which runs kafka due to compatibility and open issue
