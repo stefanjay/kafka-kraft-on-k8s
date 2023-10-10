@@ -3,6 +3,10 @@ name: build and push on merge
 on:
   push:
     branches: [ "master" ]
+    paths-ignore:
+      - './README.md'
+      - './.gitignore'
+      - '.github/**'
 
 jobs:
   docker:
