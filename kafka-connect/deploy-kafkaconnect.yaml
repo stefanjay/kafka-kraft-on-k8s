@@ -42,7 +42,11 @@ spec:
       labels:
         app: kafka-connect
     spec:
-    ### TODO: add JMX plugin to gather metrics
+      securityContext:
+        runAsNonRoot: true
+        fsGroup: 1001
+        runAsUser: 1001
+        runAsGroup: 1001
       containers:
         - name: kafka-connect-container
           image: kafkakraft/kafkakraft-connect:3.6.0

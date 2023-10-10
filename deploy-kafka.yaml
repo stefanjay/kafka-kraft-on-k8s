@@ -60,9 +60,9 @@ spec:
           ports:
             - containerPort: 9092
             - containerPort: 9093
-          env:
-            - name: REPLICAS
-              value: '3'
+          env:                           # for configuration examples see official Kafka docu
+            - name: REPLICAS             # https://kafka.apache.org/documentation/#configuration
+              value: '3'                 #! ENVs are mandatory and defined in the entrypoint.sh
             - name: SERVICE
               value: kafka-svc
             - name: NAMESPACE
@@ -71,12 +71,14 @@ spec:
               value: /mnt/kafka
             - name: CLUSTER_ID
               value: QwjfU6MPQ_CMdFsbCx7EGg
-# FIXME:    # - name: DEFAULT_REPLICATION_FACTOR
-            #   value: '3'
+            - name: DEFAULT_REPLICATION_FACTOR
+              value: '3'
             - name: DEFAULT_MIN_INSYNC_REPLICAS
               value: '2'
             - name: KAFKA_NUM_PARTITIONS
-              value: '1'
+              value: '8'
+            - name: AUTO_CREATE_TOPICS_ENABLE
+              value: 'yes'
           volumeMounts:
             - name: kafka-storage-data
               mountPath: /mnt/kafka
