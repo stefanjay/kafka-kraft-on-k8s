@@ -91,6 +91,10 @@ Stefan Jährling @ System Vertrieb Alexander GmbH
   > k -n kafka get pod -w
 
   ## Changelog
+v0.7b
+- fixed JMX definition
+- fixed Kafka Connect Splunk connector integration
+  
 v0.7a
 - fixed kafkaconnect
 - minor changes in manifests
