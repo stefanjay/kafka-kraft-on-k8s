@@ -20,7 +20,7 @@ RUN wget -O /tmp/kafka_${SCALA_VERSION}-${KAFKA_VERSION}.tgz \
  && rm /tmp/kafka_${SCALA_VERSION}-${KAFKA_VERSION}.tgz \
  && ln -s /opt/kafka_${SCALA_VERSION}-${KAFKA_VERSION} ${KAFKA_HOME}
 
-COPY ./connect-distributed.properties  /opt/kafka/config/connect-distributed.properties
+COPY ./kafka-connect/connect-distributed.properties  /opt/kafka/config/connect-distributed.properties
 
 COPY ./jmx-exporter-config.yaml /opt/jmx-exporter-config.yaml
 RUN wget https://repo1.maven.org/maven2/io/prometheus/jmx/jmx_prometheus_javaagent/0.17.2/jmx_prometheus_javaagent-0.17.2.jar -O /opt/jmx_prometheus_javaagent-0.17.2.jar
