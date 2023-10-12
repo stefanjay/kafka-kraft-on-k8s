@@ -20,11 +20,13 @@ RUN wget -O /tmp/kafka_${SCALA_VERSION}-${KAFKA_VERSION}.tgz \
  && rm /tmp/kafka_${SCALA_VERSION}-${KAFKA_VERSION}.tgz \
  && ln -s /opt/kafka_${SCALA_VERSION}-${KAFKA_VERSION} ${KAFKA_HOME}
 
-COPY ./kafka-connect/connect-distributed.properties  /opt/kafka/config/connect-distributed.properties
+COPY ./connect-distributed.properties  /opt/kafka/config/connect-distributed.properties
 
 COPY ./jmx-exporter-config.yaml /opt/jmx-exporter-config.yaml
 RUN wget https://repo1.maven.org/maven2/io/prometheus/jmx/jmx_prometheus_javaagent/0.17.2/jmx_prometheus_javaagent-0.17.2.jar -O /opt/jmx_prometheus_javaagent-0.17.2.jar
 ENV KAFKA_OPTS="-javaagent:/opt/jmx_prometheus_javaagent-0.17.2.jar=9000:/opt/jmx-exporter-config.yaml"
+
+RUN wget https://github.com/splunk/kafka-connect-splunk/releases/download/v2.1.2/splunk-kafka-connect-v2.1.2.jar -O /opt/kafka/libs/splunk-kafka-connect-v2.1.2.jar
 
 COPY  --chown=kafka:kafka ./entrypoint.sh /
 RUN ["chmod", "+x", "/entrypoint.sh"]
