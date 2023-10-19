@@ -11,6 +11,9 @@ Apache Kafka starting in version 3.3 is using the Raft metadata protocol to aban
 
 More info can be found in the official Apache Kafka docs https://kafka.apache.org/documentation/#kraft
 
+## Public DockerHub Imageregistry
+-> https://hub.docker.com/r/kafkakraft/kafkakraft
+
 #
 ## Table of Content
 - [KRaft "Kafka Raft" on Kubernetes](#kraft-kafka-raft-on-kubernetes)
