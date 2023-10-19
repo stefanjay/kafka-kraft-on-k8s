@@ -66,7 +66,7 @@ Stefan Jährling @ System Vertrieb Alexander GmbH
     value: '8'
 
   - name: AUTO_CREATE_TOPICS_ENABLE
-    value: 'yes'
+    value: 'true'
 ```
 
 ## HowTo
