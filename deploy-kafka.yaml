@@ -78,7 +78,7 @@ spec:
             - name: KAFKA_NUM_PARTITIONS
               value: '8'
             - name: AUTO_CREATE_TOPICS_ENABLE
-              value: 'yes'
+              value: 'true'
           volumeMounts:
             - name: kafka-storage-data
               mountPath: /mnt/kafka
