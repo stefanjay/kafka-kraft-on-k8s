@@ -24,6 +24,6 @@ COPY ./manifests/kafka/jmx-exporter-config.yaml /opt/jmx-exporter-config.yaml
 RUN wget https://repo1.maven.org/maven2/io/prometheus/jmx/jmx_prometheus_javaagent/0.17.2/jmx_prometheus_javaagent-0.17.2.jar -O /opt/jmx_prometheus_javaagent-0.17.2.jar
 ENV KAFKA_OPTS="-javaagent:/opt/jmx_prometheus_javaagent-0.17.2.jar=9000:/opt/jmx-exporter-config.yaml"
 
-COPY --chown=kafka:kafka ./entrypoint.sh /
+COPY --chown=kafka:kafka ./manifests/kafka/entrypoint.sh /
 RUN ["chmod", "+x", "/entrypoint.sh"]
 ENTRYPOINT ["/entrypoint.sh"]
