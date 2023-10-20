@@ -1,0 +1,15 @@
+  {
+    "name": "kafka-connect-splunk",
+    "config": {
+      "connector.class":"com.splunk.kafka.connect.SplunkSinkConnector"
+      "errors.log.include.messages":"true"
+      "tasks.max":"5"
+      "splunk.indexes":"main"
+      "splunk.hec.uri":"https://splunk-s1-forwarder-standalone-service.splunk-enterprise.svc:8088/"
+      "splunk.hec.ssl.validate.certs":"false"
+      "value.converter":"org.apache.kafka.connect.json.JsonConverter"
+      "errors.log.enable":"true"
+      "key.converter":"org.apache.kafka.connect.converters.ByteArrayConverter"
+      "splunk.hec.token":"a2d63588-b85e-4069-b061-45ff188e9b95"
+    }
+  }
