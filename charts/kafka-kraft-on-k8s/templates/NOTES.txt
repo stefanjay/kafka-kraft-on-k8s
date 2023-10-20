@@ -1,0 +1,9 @@
+Congratulations! The chart has been successfully deployed.
+
+The following apps are live:
+{{- if .Values.kafka.enabled }}
+- Kafka KRaft {{ .Values.kafka.image.tag }}
+{{- end }}
+{{- if .Values.connect.enabled }}
+- Kafka Connect {{ .Values.connect.image.tag }}
+{{- end }}

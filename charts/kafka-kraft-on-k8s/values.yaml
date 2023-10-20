@@ -1,0 +1,315 @@
+global:
+  labels: {}
+  annotations: {}
+  notes:
+    enabled: true
+
+#
+# K8s Kafka KRaft Cluster Chart (K4C)
+kafka:
+  enabled: true
+
+  # ENVs are mandatory and defined in the entrypoint.sh
+  #
+  env:
+    REPLICAS: 3
+    SERVICE: &service kafka-svc
+    NAMESPACE: &namespace kafka-test
+    SHARE_DIR: /mnt/kafka
+    # $ kafka-storage.sh random-uuid # 16 bytes
+    # see docs: https://kafka.apache.org/33/documentation.html#quickstart_startserver
+    CLUSTER_ID: QwjfU6MPQ_CMdFsbCx7EGg
+    DEFAULT_REPLICATION_FACTOR: '3'
+    DEFAULT_MIN_INSYNC_REPLICAS: '2'
+    KAFKA_NUM_PARTITIONS: '8'
+    AUTO_CREATE_TOPICS_ENABLE: 'true'
+    DEBUG: 'true'
+
+  name: kafka
+  namespace: *namespace
+  labels:
+    app: &label kafkakraft
+  image:
+    repository: kafkakraft/kafkakraft
+    pullPolicy: IfNotPresent
+    # Overrides the image tag whose default is the chart appVersion.
+    tag: "3.6.0"
+  imagePullSecrets: []
+  container:
+    name: kafka-container
+
+  affinity: {}
+
+  autoscaling:
+    enabled: false
+    minReplicas: 3
+    maxReplicas: 100
+    targetCPUUtilizationPercentage: 80
+    # targetMemoryUtilizationPercentage: 80
+
+  hpa:
+    enabled: false
+    minReplicas: 3
+    maxReplicas: 5
+    targetCPUUtilizationPercentage: 80
+    targetMemoryUtilizationPercentage: 70
+    metrics:
+      - type: Resource
+        resource:
+          name: cpu
+          targetAverageUtilization: 50
+      - type: Pods
+        pods:
+          metricName: http_requests
+          targetAverageValue: 100
+
+  ingress:
+    enabled: false
+    className: ""
+    annotations: {}
+      # kubernetes.io/ingress.class: nginx
+      # kubernetes.io/tls-acme: "true"
+    hosts:
+      - host: chart-example.local
+        paths:
+          - path: /
+            pathType: ImplementationSpecific
+    tls: []
+    #  - secretName: chart-example-tls
+    #    hosts:
+    #      - chart-example.local
+
+  # nameOverride can be set to override the name
+  # of the Helm release during a chart deployment
+  nameOverride: ""
+
+  # nodeSelector can be set to override the node selection
+  nodeSelector: {}
+
+  # ports for the pods and service
+  ports:
+    # Kafka port for data streaming
+    - name: kafka
+      port: 9092
+    # Prometheus port for JMX metrics
+    - name: prometheus
+      port: 9000
+
+  # the below `replicaCount` represents
+  # the number of replicas in the StatefulSet
+  replicaCount: 3
+
+  resources: {}
+    # We usually recommend not to specify default resources and to leave this as a conscious
+    # choice for the user. This also increases chances charts run on environments with little
+    # resources, such as Minikube. If you do want to specify resources, uncomment the following
+    # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
+    # limits:
+    #   cpu: 100m
+    #   memory: 128Mi
+    # requests:
+    #   cpu: 100m
+    #   memory: 128Mi
+
+  # mandatory hardening - must be set to disable root user in the container
+  # kafka is running as user kafka (1001:1001)
+  securityContext:
+    runAsNonRoot: true
+    fsGroup: 1001
+    runAsUser: 1001
+    runAsGroup: 1001
+
+  # Service definition with labels and JMX metrics annotations
+  #
+  # The following is an example of a service definition.
+  service:
+    name: *service
+    labels:
+      app: *service
+    #  Annotations to add to the service
+    #  e.g. to enable JMX metrics via Prometheus
+    annotations:
+      prometheus.io/scrape: "true"
+      prometheus.io/port: "9000"
+    type: ClusterIP
+    selector:
+      app: *label
+
+  # Specifies whether a service account should be created
+  serviceAccount:
+    create: false
+    name: "kafka-sa"
+    # Automatically mount a ServiceAccount's API credentials?
+    automount: true
+    # Annotations to add to the service account
+    annotations: {}
+    labels:
+      app: *service
+
+  rbac:
+    create: false
+    # Whether to create & use RBAC resources or not
+    # binding Kafka ServiceAccount to a role
+    # that allows Kafka pods querying the K8s API
+    # Annotations to add to the service account
+    annotations: {}
+    # The name of the service account to use.
+    # If not set and create is true, a name is generated using the fullname template
+    name: "kafka-rbac"
+    apiGroups:
+      - "stable.example.com"
+    resources:
+      - "service"
+      - "pods"
+    verbs:
+      - get
+      - list
+      - watch
+
+  tolerations: []
+    # - effect: NoSchedule
+    #   key: node-role.kubernetes.io/master
+    #   operator: Exists
+    # - effect: NoSchedule
+    #   key: node-role.kubernetes.io/control-plane
+    #   operator: Exists
+
+  # volumeMounts to persist Kafka Data
+  volumeMounts:
+    - name: &volumename kafka-storage-data
+      mountPath: /mnt/kafka
+
+  # volumeClaimTemplates for the volumeMounts
+  volumeClaimTemplates:
+    - name: *volumename
+      accessModes: ReadWriteOnce
+      storage: 100Gi
+      # resources:
+      #   requests:
+      #     storage: 100Gi
+
+#  Kafka Connect Cluster Chart
+#
+#
+connect:
+  enabled: true
+
+  env:
+    REPLICAS: 3
+    SERVICE: &service-connect kafka-connect-svc
+    NAMESPACE: *namespace
+    DEBUG: 'true'
+
+  name: kafka-connect
+  namespace: *namespace
+  labels:
+    app: &label-connect kafka-connect
+  image:
+    repository: kafkakraft/kafkakraft-connect
+    pullPolicy: IfNotPresent
+    # Overrides the image tag whose default is the chart appVersion.
+    tag: "3.6.0"
+  imagePullSecrets: []
+  container:
+    name: kafka-connect-container
+
+  hpa:
+    enabled: false
+    minReplicas: 3
+    maxReplicas: 5
+    targetCPUUtilizationPercentage: 80
+    targetMemoryUtilizationPercentage: 70
+    metrics:
+      - type: Resource
+        resource:
+          name: cpu
+          targetAverageUtilization: 50
+      - type: Pods
+        pods:
+          metricName: http_requests
+          targetAverageValue: 100
+
+  ingress:
+    enabled: false
+    className: ""
+    annotations: {}
+      # kubernetes.io/ingress.class: nginx
+      # kubernetes.io/tls-acme: "true"
+    hosts:
+      - host: chart-example.local
+        paths:
+          - path: /
+            pathType: ImplementationSpecific
+    tls: []
+    #  - secretName: chart-example-tls
+    #    hosts:
+    #      - chart-example.local
+
+  # ports for the pods and service
+  ports:
+    # Kafka port for data streaming
+    - name: connect
+      port: 8083
+    # Prometheus port for JMX metrics
+    - name: prometheus
+      port: 9000
+
+  # the below `replicaCount` represents
+  # the number of replicas in the StatefulSet
+  replicaCount: 3
+
+  resources: {}
+    # We usually recommend not to specify default resources and to leave this as a conscious
+    # choice for the user. This also increases chances charts run on environments with little
+    # resources, such as Minikube. If you do want to specify resources, uncomment the following
+    # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
+    # limits:
+    #   cpu: 100m
+    #   memory: 128Mi
+    # requests:
+    #   cpu: 100m
+    #   memory: 128Mi
+
+  service:
+    name: *service-connect
+    labels:
+      app: *service-connect
+    #  Annotations to add to the service
+    #  e.g. to enable JMX metrics via Prometheus
+    annotations:
+      prometheus.io/scrape: "true"
+      prometheus.io/port: "9000"
+    type: ClusterIP
+    selector:
+      app: *label-connect
+
+  # Specifies whether a service account should be created
+  serviceAccount:
+    create: false
+    name: "kafka-connect-sa"
+    # Automatically mount a ServiceAccount's API credentials?
+    automount: true
+    # Annotations to add to the service account
+    annotations: {}
+    labels:
+      app: *service-connect
+
+  rbac:
+    create: false
+    # Whether to create & use RBAC resources or not
+    # binding Kafka ServiceAccount to a role
+    # that allows Kafka pods querying the K8s API
+    # Annotations to add to the service account
+    annotations: {}
+    # The name of the service account to use.
+    # If not set and create is true, a name is generated using the fullname template
+    name: "kafka-connect-rbac"
+    apiGroups:
+      - "stable.example.com"
+    resources:
+      - "service"
+      - "pods"
+    verbs:
+      - get
+      - list
+      - watch

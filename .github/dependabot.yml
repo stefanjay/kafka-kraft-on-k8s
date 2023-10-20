@@ -6,10 +6,10 @@
 version: 2
 updates:
   - package-ecosystem: "docker" # See documentation for possible values
-    directory: "/" # Location of package manifests
+    directory: "/manifests/kafka" # Location of package manifests
     schedule:
       interval: "daily"
   - package-ecosystem: "docker" # See documentation for possible values
-    directory: "/kafka-connect" # Location of package manifests
+    directory: "/manifests/connect" # Location of package manifests
     schedule:
       interval: "daily"

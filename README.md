@@ -1,7 +1,11 @@
-![Image build status](https://github.com/stefanjay/kafka-kraft-on-k8s/actions/workflows/docker-image.yml/badge.svg)
-![Merge test status](https://github.com/stefanjay/kafka-kraft-on-k8s/actions/workflows/merge-tests.yaml/badge.svg)
+![](https://github.com/stefanjay/kafka-kraft-on-k8s/actions/workflows/docker-image.yml/badge.svg)
+![](https://github.com/stefanjay/kafka-kraft-on-k8s/actions/workflows/merge-tests.yaml/badge.svg)
 
-# KRaft "Kafka Raft" on Kubernetes
+
+## Helm Chart released :fireworks: :trophy:
+- chart is available via Helm Repo soon
+
+# KRaft "Kafka Raft" on Kubernetes -
 Apache Kafka starting in version 3.3 is using the Raft metadata protocol to abandon the appendage ZooKeeper overhead to control the cluster's health.
 
 <p float="left">
@@ -16,12 +20,13 @@ More info can be found in the official Apache Kafka docs https://kafka.apache.or
 
 #
 ## Table of Content
-- [KRaft "Kafka Raft" on Kubernetes](#kraft-kafka-raft-on-kubernetes)
+- [KRaft "Kafka Raft" on Kubernetes -](#kraft-kafka-raft-on-kubernetes--)
+  - [Public DockerHub Imageregistry](#public-dockerhub-imageregistry)
+- [](#)
   - [Table of Content](#table-of-content)
+- [](#-1)
   - [Author](#author)
   - [Benefits](#benefits)
-  - [Environment variables](#environment-variables)
-  - [HowTo](#howto)
   - [Changelog](#changelog)
 
 #
@@ -33,6 +38,7 @@ Stefan Jährling @ System Vertrieb Alexander GmbH
 
 ## Benefits
 
+* Helm Chart (feat: RBAC, SA, HPA, AS)
 - featuring a StatefulSet
 - clustered with at least 3 nodes
 - Kafka logdata on persistent volume /node
@@ -41,63 +47,15 @@ Stefan Jährling @ System Vertrieb Alexander GmbH
 - add connectors as easy as build an image
 - run´s in any containerized environment
 
-## Environment variables
-```yaml
-
-  - name: REPLICAS
-    value: '3'
-
-  - name: SERVICE
-    value: kafka-svc
-
-  - name: NAMESPACE
-    value: kafka
-
-  - name: SHARE_DIR
-    value: /mnt/kafka
-
-  - name: CLUSTER_ID
-    value: ys-gRE0zp9AusfyPBDNyON # $ kafka-storage.sh random-uuid; 16 bytes, see docs: https://kafka.apache.org/33/documentation.html#quickstart_startserver
-
-   - name: DEFAULT_REPLICATION_FACTOR
-    value: '3'
-
-  - name: DEFAULT_MIN_INSYNC_REPLICAS
-    value: '2'
-
-  - name: KAFKA_NUM_PARTITIONS
-    value: '8'
-
-  - name: AUTO_CREATE_TOPICS_ENABLE
-    value: 'true'
-```
-
-## HowTo
-
-#0   untar
-  > tar xzf kafka-kraft.tar.gz
-
-#1   build docker image
-  > docker build -t myregistry/kafkakraft:<tag> .
-  > docker build -t myregistry/kafka-connect:<tag> ./kafka-connect/
-
-#1b  push image to registry
-  > docker push myregistry/kafkakraft:<tag>
-
-#2   modify manifest to your needs
-  > vi sts-kafkakraft.yaml
-
-#3   deploy
-  > k apply -f deploy-kafka.yaml
-
-#4   watch deploy and check logs
-  > k -n kafka get pod -w
-
   ## Changelog
+v0.8
+- repo refactored
+- first helm release added
+
 v0.7b
 - fixed JMX definition
 - fixed Kafka Connect Splunk connector integration
-  
+
 v0.7a
 - fixed kafkaconnect
 - minor changes in manifests

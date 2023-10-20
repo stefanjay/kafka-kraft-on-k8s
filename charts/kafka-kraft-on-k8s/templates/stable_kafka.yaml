@@ -1,0 +1,100 @@
+{{- if .Values.kafka.enabled }}
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: {{ .Values.kafka.name }}
+  labels:
+    {{- range $key, $value := .Values.kafka.labels }}
+    {{ $key }}: {{ $value }}
+    {{- end }}
+  namespace: {{ .Values.kafka.namespace }}
+spec:
+  selector:
+    matchLabels:
+      {{- range $key, $value := .Values.kafka.labels }}
+      {{ $key }}: {{ $value }}
+      {{- end }}
+  serviceName: {{ .Values.kafka.service.name }}
+  replicas: {{ .Values.kafka.replicaCount }}
+  template:
+    metadata:
+      labels:
+        {{- range $key, $value := .Values.kafka.labels }}
+        {{ $key }}: {{ $value }}
+        {{- end }}
+    spec:
+      nodeSelector:
+        {{- range $key, $value := .Values.kafka.nodeSelector }}
+        {{ $key }}: {{ $value }}
+        {{- end }}
+      securityContext:
+        {{- range $key, $value := .Values.kafka.securityContext }}
+        {{ $key }}: {{ $value }}
+        {{- end }}
+      tolerations:
+        {{- range .Values.kafka.tolerations }}
+        - effect: {{ .effect }}
+          key: {{ .key }}
+          operator: {{ .operator }}
+        {{- end }}
+      imagePullSecrets:
+        {{- range .Values.kafka.imagePullSecrets }}
+        - name: {{ . }}
+        {{- end }}
+      containers:
+        - name: {{ .Values.kafka.container.name }}
+          env:
+            {{- range $name, $value := .Values.kafka.env }}
+            - name: {{ $name | quote }}
+              value: {{ $value | quote }}
+            {{- end }}
+          image: {{ .Values.kafka.image.repository }}:{{ .Values.kafka.image.tag }}
+          imagePullPolicy: {{ .Values.kafka.image.pullPolicy }}
+          ports:
+            {{- range .Values.kafka.ports }}
+            - name: {{ .name }}
+              containerPort: {{ .port }}
+            {{- end }}
+          {{- range $port := .Values.connect.ports }}
+            {{- if eq $port.name "kafka" }}
+          livenessProbe:
+            tcpSocket:
+              port: {{ $port.port }}
+            initialDelaySeconds: 5
+            periodSeconds: 3
+          readinessProbe:
+            tcpSocket:
+              port: {{ $port.port }}
+            initialDelaySeconds: 5
+            periodSeconds: 3
+            {{- end }}
+          {{- end }}
+          resources:
+            {{- if .Values.kafka.resources.limits }}
+            limits:
+              cpu: {{ .Values.kafka.resources.limits.cpu }}
+              memory: {{ .Values.kafka.resources.limits.memory }}
+            {{- end }}
+            {{- if .Values.kafka.resources.requests }}
+            requests:
+              cpu: {{ .Values.kafka.resources.requests.cpu }}
+              memory: {{ .Values.kafka.resources.requests.memory }}
+            {{- end }}
+          volumeMounts:
+            {{- range .Values.kafka.volumeMounts }}
+            - name: {{ .name | quote }}
+              mountPath: {{ .mountPath }}
+            {{- end }}
+
+  volumeClaimTemplates:
+    {{- range .Values.kafka.volumeClaimTemplates }}
+    - metadata:
+        name: {{ .name | quote }}
+      spec:
+        accessModes:
+          - {{ .accessModes }}
+        resources:
+          requests:
+            storage: {{ .storage }}
+    {{- end }}
+{{- end }}
