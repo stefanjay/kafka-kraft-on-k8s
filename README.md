@@ -2,10 +2,10 @@
 ![](https://github.com/stefanjay/kafka-kraft-on-k8s/actions/workflows/merge-tests.yaml/badge.svg)
 
 
-## Helm Chart released :fireworks: :trophy:
-- chart is available via Helm Repo soon
+# Helm Chart released
+- chart is available via Helm Repo soon :fireworks: :trophy:
 
-# KRaft "Kafka Raft" on Kubernetes -
+# KRaft "Kafka Raft" on Kubernetes
 Apache Kafka starting in version 3.3 is using the Raft metadata protocol to abandon the appendage ZooKeeper overhead to control the cluster's health.
 
 <p float="left">
@@ -20,11 +20,10 @@ More info can be found in the official Apache Kafka docs https://kafka.apache.or
 
 #
 ## Table of Content
-- [KRaft "Kafka Raft" on Kubernetes -](#kraft-kafka-raft-on-kubernetes--)
+- [Helm Chart released](#helm-chart-released)
+- [KRaft "Kafka Raft" on Kubernetes](#kraft-kafka-raft-on-kubernetes)
   - [Public DockerHub Imageregistry](#public-dockerhub-imageregistry)
-- [](#)
   - [Table of Content](#table-of-content)
-- [](#-1)
   - [Author](#author)
   - [Benefits](#benefits)
   - [Changelog](#changelog)
