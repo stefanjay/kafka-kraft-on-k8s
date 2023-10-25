@@ -1,7 +1,7 @@
 ![](https://github.com/stefanjay/kafka-kraft-on-k8s/actions/workflows/docker-image.yml/badge.svg)
 ![](https://github.com/stefanjay/kafka-kraft-on-k8s/actions/workflows/merge-tests.yaml/badge.svg)
 ----
-### Donations are very welcome, this will motivate to sleep less and code longer :3 <br>[![ko-fi](https://ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/A0A1QHUNC)
+### Donations are very welcome, this will motivate to sleep less and code harder :3 <br><br>[![ko-fi](https://ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/A0A1QHUNC) -- <a href="https://opencollective.com/kafka-kraft-on-k8s/donate" target="_blank"><img src="https://opencollective.com/webpack/donate/button@2x.png?color=blue" width=205></a>
 
 
 # Helm Chart released
