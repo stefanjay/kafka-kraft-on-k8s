@@ -1,5 +1,7 @@
 ![](https://github.com/stefanjay/kafka-kraft-on-k8s/actions/workflows/docker-image.yml/badge.svg)
 ![](https://github.com/stefanjay/kafka-kraft-on-k8s/actions/workflows/merge-tests.yaml/badge.svg)
+----
+### Donations are very welcome, this will motivate to sleep less and code longer :3 <br>[![ko-fi](https://ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/A0A1QHUNC)
 
 
 # Helm Chart released
