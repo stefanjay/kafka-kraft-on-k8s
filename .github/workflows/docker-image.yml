@@ -27,6 +27,7 @@ jobs:
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
       - name: Build and push KafkaKRaft
+        if: ${{ !contains(github.event.pull_request.changed_files, '*.md') }}
         uses: docker/build-push-action@v3
         with:
           file: ./manifests/kafka/Dockerfile
@@ -34,6 +35,7 @@ jobs:
           tags: kafkakraft/kafkakraft:latest
 
       - name: Build and push Kafka-Connect
+        if: ${{ !contains(github.event.pull_request.changed_files, '*.md') }}
         uses: docker/build-push-action@v3
         with:
           file: ./manifests/connect/Dockerfile
