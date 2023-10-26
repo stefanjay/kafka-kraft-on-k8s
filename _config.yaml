@@ -1,0 +1,3 @@
+theme: jekyll-theme-minimal
+name: Kafka-KRaft-on-K8s charts
+description: Kafka KRaft on K8s Helm Repository
