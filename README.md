@@ -1,6 +1,7 @@
-![](https://github.com/stefanjay/kafka-kraft-on-k8s/actions/workflows/docker-image.yml/badge.svg)
-![](https://github.com/stefanjay/kafka-kraft-on-k8s/actions/workflows/merge-tests.yaml/badge.svg)
-[![Update Kafka Version Table](https://github.com/stefanjay/kafka-kraft-on-k8s/actions/workflows/security.md.yaml/badge.svg)](https://github.com/stefanjay/kafka-kraft-on-k8s/actions/workflows/security.md.yaml)
+[![](https://github.com/stefanjay/kafka-kraft-on-k8s/actions/workflows/build_and_push_on_merge.yml/badge.svg)](https://github.com/stefanjay/kafka-kraft-on-k8s/actions/workflows/build_and_push_on_merge.yml)
+[![](https://github.com/stefanjay/kafka-kraft-on-k8s/actions/workflows/merge-tests.yaml/badge.svg)](https://github.com/stefanjay/kafka-kraft-on-k8s/actions/workflows/merge-tests.yaml)
+[![](https://github.com/stefanjay/kafka-kraft-on-k8s/actions/workflows/security.md.yaml/badge.svg)](https://github.com/stefanjay/kafka-kraft-on-k8s/actions/workflows/security.md.yaml)
+[![](https://github.com/stefanjay/kafka-kraft-on-k8s/actions/workflows/pages/pages-build-deployment/badge.svg)](https://github.com/stefanjay/kafka-kraft-on-k8s/actions/workflows/pages/pages-build-deployment)
 
 # KRaft "Kafka Raft" on Kubernetes
 Apache Kafka starting in version 3.3 is using the Raft metadata protocol to abandon the appendage ZooKeeper overhead to control the cluster's health.
@@ -22,7 +23,6 @@ More info can be found in the official Apache Kafka docs https://kafka.apache.or
 #### Public DockerHub Imageregistry
 - https://hub.docker.com/r/kafkakraft/kafkakraft
 
-#
 ## Table of Content
 - [Helm Chart released](#helm-chart-released)
 - [KRaft "Kafka Raft" on Kubernetes](#kraft-kafka-raft-on-kubernetes)
@@ -31,8 +31,7 @@ More info can be found in the official Apache Kafka docs https://kafka.apache.or
   - [Author](#author)
   - [Benefits](#benefits)
   - [Changelog](#changelog)
-
-#
+---
 
 ## Author
 Stefan Jährling @ System Vertrieb Alexander GmbH
