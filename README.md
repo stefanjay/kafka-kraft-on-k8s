@@ -4,7 +4,7 @@
 [![](https://github.com/stefanjay/kafka-kraft-on-k8s/actions/workflows/pages/pages-build-deployment/badge.svg)](https://github.com/stefanjay/kafka-kraft-on-k8s/actions/workflows/pages/pages-build-deployment)
 [![](https://img.shields.io/endpoint?url=https://artifacthub.io/badge/repository/kafka-kraft-on-k8s)](https://artifacthub.io/packages/search?repo=kafka-kraft-on-k8s)
 
-# KRaft "Kafka Raft" on Kubernetes
+# Kafka KRaft on Kubernetes Helm Chart (K4C)
 Apache Kafka starting in version 3.3 is using the Raft metadata protocol to abandon the appendage ZooKeeper overhead to control the cluster's health.
 
 <p float="left">
@@ -19,7 +19,7 @@ More info can be found in the official Apache Kafka docs https://kafka.apache.or
 ## News
 
 #### Helm Chart released
-- chart is soon available via Helm Repo
+- chart is available via Helm Repo -> https://stefanjay.github.io/kafka-kraft-on-k8s/
   
 #### Public DockerHub Imageregistry
 - https://hub.docker.com/r/kafkakraft/kafkakraft
