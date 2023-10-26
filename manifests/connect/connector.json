@@ -10,6 +10,6 @@
       "value.converter":"org.apache.kafka.connect.json.JsonConverter"
       "errors.log.enable":"true"
       "key.converter":"org.apache.kafka.connect.converters.ByteArrayConverter"
-      "splunk.hec.token":"a2d63588-b85e-4069-b061-45ff188e9b95"
+      "splunk.hec.token":"s3cr3t"
     }
   }
