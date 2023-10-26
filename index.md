@@ -3,7 +3,7 @@
 ## Add the 'Kafka KRaft on K8s' Helm repository
 
 ```
-helm repo add kafka-kraft-on-k8s https://kafka-kraft-on-k8s.github.io/helm-charts
+helm repo add kafka-kraft-on-k8s https://stefanjay.github.io/kafka-kraft-on-k8s/
 ```
 
 ### In case the repository already exists, upgrade to the latest version
