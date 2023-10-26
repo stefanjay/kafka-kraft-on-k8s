@@ -7,5 +7,5 @@ entries:
     name: kafka-kraft-on-k8s
     version: 1.0.0
     urls:
-    - https://github.com/stefanjay/kafka-kraft-on-k8s/releases/download/1.0.0/kafka-kraft-on-k8s-1.0.0.tgz
+    - https://github.com/stefanjay/kafka-kraft-on-k8s/releases/download/helm/kafka-kraft-on-k8s-3.6.0.tar.gz
     digest: sha256:6eafe5a7364ea8a41f13f5beae545ce0af47edf5faf5f616bbfbf1857831a921
