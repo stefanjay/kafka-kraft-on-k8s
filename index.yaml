@@ -3,7 +3,7 @@ entries:
   kafka-kraft-on-k8s:
   - apiVersion: v2
     appVersion: 3.6.0
-    description: A Helm chart for deploying Kafka-Kraft on Kubernetes
+    description: A Helm chart for Kafka KRaft on Kubernetes
     name: kafka-kraft-on-k8s
     version: 1.0.0
     urls:
