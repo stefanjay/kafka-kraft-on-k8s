@@ -48,7 +48,7 @@ Stefan Jährling @ System Vertrieb Alexander GmbH
 - environment variables in manifest
 - up-to-date light-weight Kafka Connect Cluster
 - add connectors as easy as build an image
-- run´s in any containerized environment
+- runs in any containerized environment
 
   ## Changelog
 v0.8
