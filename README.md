@@ -1,12 +1,6 @@
 ![](https://github.com/stefanjay/kafka-kraft-on-k8s/actions/workflows/docker-image.yml/badge.svg)
 ![](https://github.com/stefanjay/kafka-kraft-on-k8s/actions/workflows/merge-tests.yaml/badge.svg)
 [![Update Kafka Version Table](https://github.com/stefanjay/kafka-kraft-on-k8s/actions/workflows/security.md.yaml/badge.svg)](https://github.com/stefanjay/kafka-kraft-on-k8s/actions/workflows/security.md.yaml)
-----
-### Donations are very welcome, this will motivate to sleep less and code harder :3 <br><br>[![ko-fi](https://ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/A0A1QHUNC) -- <a href="https://opencollective.com/kafka-kraft-on-k8s/donate" target="_blank"><img src="https://opencollective.com/webpack/donate/button@2x.png?color=blue" width=205></a>
-
-
-# Helm Chart released
-- chart is available via Helm Repo soon :fireworks: :trophy:
 
 # KRaft "Kafka Raft" on Kubernetes
 Apache Kafka starting in version 3.3 is using the Raft metadata protocol to abandon the appendage ZooKeeper overhead to control the cluster's health.
@@ -18,8 +12,15 @@ Apache Kafka starting in version 3.3 is using the Raft metadata protocol to aban
 
 More info can be found in the official Apache Kafka docs https://kafka.apache.org/documentation/#kraft
 
-## Public DockerHub Imageregistry
--> https://hub.docker.com/r/kafkakraft/kafkakraft
+
+
+## News
+
+#### Helm Chart released
+- chart is soon available via Helm Repo
+  
+#### Public DockerHub Imageregistry
+- https://hub.docker.com/r/kafkakraft/kafkakraft
 
 #
 ## Table of Content
@@ -102,3 +103,7 @@ v0.1
 - added Dockerfile
 - updated entrypoint.sh
 - switched to kafka v3.3.1
+
+
+----
+### Donations are very welcome, this will motivate to sleep less and code harder :3 <br><br>[![ko-fi](https://ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/A0A1QHUNC) -- <a href="https://opencollective.com/kafka-kraft-on-k8s/donate" target="_blank"><img src="https://opencollective.com/webpack/donate/button@2x.png?color=blue" width=205></a>
