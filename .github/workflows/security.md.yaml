@@ -27,7 +27,8 @@ jobs:
 
       - name: Update SECURITY.md
         run: |
-          sed -i '/| Version | Supported     |/r table.md' SECURITY.md
+          sed -i -e '/| Version | Supported   |/,$ d' SECURITY.md
+          sed -i '/| Version | Supported   |/r table.md' SECURITY.md
           rm table.md
 
       - name: Commit changes
