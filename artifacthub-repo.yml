@@ -1,4 +1,4 @@
 repositoryID: edc28b34-77d2-4a70-a65f-b30515fb307c
 owners: # (optional, used to claim repository ownership)
-  - name: kafka-kraft-on-k8s
-    email: mail@me
+- name: Stefan Jährling
+    email: jaehrlingstefan@gmail.com
