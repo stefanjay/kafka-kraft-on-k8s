@@ -31,6 +31,8 @@ jobs:
           rm table.md
 
       - name: Commit changes
+        env:
+          ACCESS_TOKEN: ${{ secrets.gh-action-security-md }}
         run: |
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"
