@@ -1,0 +1,14 @@
+apiVersion: v2
+name: kafka-kraft-on-k8s
+description: A Helm chart for Kubernetes
+icon: https://kafka.apache.org/logos/kafka_logo--simple.png
+
+maintainers:
+  - name: Stefam Jährling | SVA System Vertrieb Alexander GmbH
+    url: sva.de
+
+type: application
+
+version: 0.1.0
+
+appVersion: "{{ .Values.image.tag }}"
