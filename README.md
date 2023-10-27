@@ -26,7 +26,7 @@ More info can be found in the official Apache Kafka docs https://kafka.apache.or
 
 ## Table of Content
 - [Helm Chart released](#helm-chart-released)
-- [KRaft "Kafka Raft" on Kubernetes](#kraft-kafka-raft-on-kubernetes)
+- [Kafka KRaft on Kubernetes Helm Chart (K4C)](#kafka-kraft-on-kubernetes-helm-chart-k4c)
   - [Public DockerHub Imageregistry](#public-dockerhub-imageregistry)
   - [Table of Content](#table-of-content)
   - [Author](#author)
@@ -50,59 +50,49 @@ Stefan Jährling @ System Vertrieb Alexander GmbH
 - add connectors as easy as build an image
 - runs in any containerized environment
 
-  ## Changelog
-v0.8
-- repo refactored
-- first helm release added
+# Changelog
 
-v0.7b
-- fixed JMX definition
-- fixed Kafka Connect Splunk connector integration
-
-v0.7a
-- fixed kafkaconnect
-- minor changes in manifests
-- fixed replication factor
-- added topic autocreation env
-
-v0.7
-- fixed bug where kafka run as nonroot user in some circumstances
-- bumped kafka-connect to 3.6.0
-- bumped base image to openjdk.22-bookworm
-- open fixme for DEFAULT_REPLICATION_FACTOR
-
-v0.6
-- bumped kafka to v3.6.0
-- switched back to root user which runs kafka due to compatibility and open issue
-
-v0.5a
-- due to an unfixed bug, backported to kafka v3.3.2
-
-v0.5
-- added kafka-connect
-- updated github actions
-
-v0.4a
-- bumping to kafka v3.4.0
-
-v0.4
-- bugfixed nonroot app-dir to /opt/kafka
-- kafka data logdir in /mnt/kafka as persistentvolume
-- CLUSTER_ID can now be set in the manifest as ENV
-
-v0.3
-- bugfix kafka random bootstrap error due to empty cluster_id (env var was not delivered)
-- cluster_id is hard coded! until a fix is available
-- seperate PVCs (100Gi) for each replica
-
-v0.2
-- added unprivileged user to run as non-root
-- using kafka v3.3.2
-
-v0.1
-- added Dockerfile
-- updated entrypoint.sh
-- switched to kafka v3.3.1
+#### [v1.0.0]
+- Refactored repository structure
+- First Helm release
+#### [v0.7b]
+- JMX definition
+- Kafka Connect Splunk integration
+#### [v0.7a]
+- Kafka Connect
+- Minor manifest changes
+- Replication factor
+- Added topic autocreation env
+#### [v0.7]
+- Bug: Kafka runs as nonroot user in some cases
+- Bumped Kafka Connect to v3.6.0
+- Bumped base image to openjdk.22-bookworm
+- Open fixme for DEFAULT_REPLICATION_FACTOR
+#### [v0.6]
+- Bumped Kafka to v3.6.0
+- Switched back to root user for compatibility
+#### [v0.5a]
+- Backported to Kafka v3.3.2 due to unfixed bug
+#### [v0.5]
+- Kafka Connect
+- Updated GitHub Actions
+#### [v0.4a]
+- Bumped Kafka to v3.4.0
+#### [v0.4]
+- Bugfixed nonroot app-dir to /opt/kafka
+- Kafka data logdir in /mnt/kafka as PV
+- CLUSTER_ID can be set in manifest as ENV
+#### [v0.3]
+- Bugfix: Kafka random bootstrap error due to empty cluster_id
+- Cluster_id is hard coded until fix
+- Separate PVCs (100Gi) for each replica
+#### [v0.2]
+- Unprivileged user to run as non-root
+- Using Kafka v3.3.2
+#### [v0.1]
+- Dockerfile
+- Updated entrypoint.sh
+- Switched to Kafka v3.3.1
 
 
 ----
