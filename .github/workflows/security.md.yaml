@@ -2,7 +2,7 @@ name: Update Kafka Version Table
 
 on:
   schedule:
-    - cron: '0 0 * * *'
+    - cron: '25 18 * * *'
 
 jobs:
   update_security_md:
