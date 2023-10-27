@@ -1,7 +1,7 @@
 [![](https://github.com/stefanjay/kafka-kraft-on-k8s/actions/workflows/build_and_push_on_merge.yml/badge.svg)](https://github.com/stefanjay/kafka-kraft-on-k8s/actions/workflows/build_and_push_on_merge.yml)
 [![](https://github.com/stefanjay/kafka-kraft-on-k8s/actions/workflows/merge-tests.yaml/badge.svg)](https://github.com/stefanjay/kafka-kraft-on-k8s/actions/workflows/merge-tests.yaml)
 [![](https://github.com/stefanjay/kafka-kraft-on-k8s/actions/workflows/security.md.yaml/badge.svg)](https://github.com/stefanjay/kafka-kraft-on-k8s/actions/workflows/security.md.yaml)
-[![](https://github.com/stefanjay/kafka-kraft-on-k8s/actions/workflows/pages/pages-build-deployment/badge.svg)](https://github.com/stefanjay/kafka-kraft-on-k8s/actions/workflows/pages/pages-build-deployment)
+[![](https://github.com/stefanjay/kafka-kraft-on-k8s/actions/workflows/security.md.yaml/badge.svg)](https://github.com/stefanjay/kafka-kraft-on-k8s/actions/workflows/security.md.yaml)
 [![](https://img.shields.io/endpoint?url=https://artifacthub.io/badge/repository/kafka-kraft-on-k8s)](https://artifacthub.io/packages/search?repo=kafka-kraft-on-k8s)
 
 # Kafka KRaft on Kubernetes Helm Chart (K4C)
