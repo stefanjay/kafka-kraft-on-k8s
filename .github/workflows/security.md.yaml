@@ -38,5 +38,9 @@ jobs:
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"
           git add SECURITY.md
-          git commit -m "Update Kafka version table - GH Action Pipeline run"
-          git push
+          if ! git diff-index --quiet HEAD --; then
+            git commit -m "Update Kafka version table - GH Action Pipeline run"
+            git push
+          else
+            echo "No changes to commit. Exiting job as successful."
+          fi
