@@ -4,7 +4,7 @@
 [![](https://img.shields.io/endpoint?url=https://artifacthub.io/badge/repository/kafka-kraft-on-k8s)](https://artifacthub.io/packages/search?repo=kafka-kraft-on-k8s)
 
 # Kafka KRaft on Kubernetes Helm Chart (K4C)
-Apache Kafka starting in version 3.3 is using the Raft metadata protocol to abandon the appendage ZooKeeper overhead to control the cluster's health.
+Apache Kafka starting in version 3.3 is using the Raft metadata protocol production ready to abandon the appendage ZooKeeper overhead to control the cluster's health.
 
 <p float="left">
   <img src="https://images.contentful.com/gt6dp23g0g38/5ssqb8kUN6Lq5lR1EZdCX1/2a28415f8718dfec9edc345d9914dfec/new-quorum-controller-1536x817.png" width="300" />
