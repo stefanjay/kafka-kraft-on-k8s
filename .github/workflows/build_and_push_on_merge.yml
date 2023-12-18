@@ -41,4 +41,4 @@ jobs:
           tags: kafkakraft/kafka-connect:latest
 
       - name: Printout status
-        run: echo "Images builded + pushed to registry."
+        run: echo "Images were built and transferred to the registry."
