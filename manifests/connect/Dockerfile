@@ -1,4 +1,4 @@
-FROM openjdk:22-bookworm
+FROM openjdk:23-bookworm
 
 ENV KAFKA_VERSION=3.6.0
 ENV SCALA_VERSION=2.13
