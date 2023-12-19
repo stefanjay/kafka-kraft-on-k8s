@@ -205,7 +205,7 @@ connect:
   labels:
     app: &label-connect kafka-connect
   image:
-    repository: kafkakraft/kafkakraft-connect
+    repository: kafkakraft/kafka-connect
     pullPolicy: IfNotPresent
     # Overrides the image tag whose default is the chart appVersion.
     tag: "3.6.0"
