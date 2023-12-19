@@ -5,7 +5,7 @@ entries:
     appVersion: 3.6.0
     description: A Helm chart for Kafka KRaft on Kubernetes
     name: kafka-kraft-on-k8s
-    version: 1.0.0
+    version: 1.0.1
     urls:
     - https://github.com/stefanjay/kafka-kraft-on-k8s/releases/download/helm/kafka-kraft-on-k8s-3.6.0.tar.gz
-    digest: sha256:6eafe5a7364ea8a41f13f5beae545ce0af47edf5faf5f616bbfbf1857831a921
+    digest: sha256:1b1b58d40cf0ffe9c1cf19362c3fda119c7915e4a6f21a66b6b341a6bb9d64fa
