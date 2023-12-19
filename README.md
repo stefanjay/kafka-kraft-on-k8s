@@ -51,6 +51,8 @@ Stefan Jährling @ System Vertrieb Alexander GmbH
 
 # Changelog
 
+#### [v1.0.1]
+- Minor fix (package version, image name in values.yaml)
 #### [v1.0.0]
 - Refactored repository structure
 - First Helm release
