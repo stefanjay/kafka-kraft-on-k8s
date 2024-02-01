@@ -55,7 +55,7 @@ spec:
         runAsGroup: 1001
       containers:
         - name: kafka-container
-          image: kafkakraft/kafkakraft:3.6.0
+          image: kafkakraft/kafkakraft:latest
           imagePullPolicy: Always
           ports:
             - containerPort: 9092
