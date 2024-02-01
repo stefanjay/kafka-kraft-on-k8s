@@ -49,7 +49,7 @@ spec:
         runAsGroup: 1001
       containers:
         - name: kafka-connect-container
-          image: kafkakraft/kafkakraft-connect:3.6.0
+          image: kafkakraft/kafka-connect:latest
           imagePullPolicy: Always
           ports:
             - containerPort: 8083
