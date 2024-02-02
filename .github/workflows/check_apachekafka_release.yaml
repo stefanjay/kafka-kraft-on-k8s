@@ -14,7 +14,7 @@ jobs:
 
       - name: Get Kafka versions
         run: |
-          versions=$(curl -s https://downloads.apache.org/kafka/ | grep -oP 'href="\K[^"]+' | grep -E '^(\d+\.)?(\d+\.)?(\*|\d+)$' | sort -rV)
+          versions=$(curl -s https://downloads.apache.org/kafka/ | grep -oP 'href="\K[^"]+' | grep -E '^[0-9]+\.[0-9]+\.[0-9]+/' | sort -rV | sed 's/\/$//')
           echo "| Version | Supported     |" > table.md
           echo "| ------- | -------------- |" >> table.md
           while read -r line; do
