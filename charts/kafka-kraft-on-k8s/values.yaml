@@ -4,26 +4,33 @@ global:
   notes:
     enabled: true
 
+
 #
-# K8s Kafka KRaft Cluster Chart (K4C)
+# Warning:  ! ENVs are mandatory and hard defined in the entrypoint.sh on image build level.
+#
+
+
+# --------------------------------------------------------------------------------------------------------------------------------------- #
+# Kafka KRaft
+# --------------------------------------------------------------------------------------------------------------------------------------- #
+
 kafka:
   enabled: true
 
-  # ENVs are mandatory and defined in the entrypoint.sh
-  #
   env:
+    PROCESS_ROLES: 'broker, controller'
     REPLICAS: 3
     SERVICE: &service kafka-svc
     NAMESPACE: &namespace kafka-test
     SHARE_DIR: /mnt/kafka
     # $ kafka-storage.sh random-uuid # 16 bytes
     # see docs: https://kafka.apache.org/33/documentation.html#quickstart_startserver
-    CLUSTER_ID: QwjfU6MPQ_CMdFsbCx7EGg
+    CLUSTER_ID: &clusterid QwjfU6MPQ_CMdFsbCx7EGg
     DEFAULT_REPLICATION_FACTOR: '3'
     DEFAULT_MIN_INSYNC_REPLICAS: '2'
     KAFKA_NUM_PARTITIONS: '8'
     AUTO_CREATE_TOPICS_ENABLE: 'true'
-    DEBUG: 'true'
+    DEBUG: 'false'
 
   name: kafka
   namespace: *namespace
@@ -33,7 +40,7 @@ kafka:
     repository: kafkakraft/kafkakraft
     pullPolicy: IfNotPresent
     # Overrides the image tag whose default is the chart appVersion.
-    tag: "3.6.0"
+    tag: &tag "3.6.1"
   imagePullSecrets: []
   container:
     name: kafka-container
@@ -188,27 +195,177 @@ kafka:
       #   requests:
       #     storage: 100Gi
 
-#  Kafka Connect Cluster Chart
-#
-#
+
+# --------------------------------------------------------------------------------------------------------------------------------------- #
+# Kafka Controller
+# --------------------------------------------------------------------------------------------------------------------------------------- #
+# TODO --> add possiblity to choose kafka node type (controller, broker)
+
+controller:
+  enabled: false
+
+  env:
+    PROCESS_ROLES: controller
+    REPLICAS: 2
+    SERVICE: *service
+    NAMESPACE: *namespace
+    SHARE_DIR: /mnt/kafka
+    CLUSTER_ID: *clusterid
+    DEBUG: 'false'
+
+  name: controller
+  namespace: *namespace
+  labels:
+    app: &label kafkakraft-controller
+  image:
+    repository: kafkakraft/kafkakraft
+    pullPolicy: IfNotPresent
+    # Overrides the image tag whose default is the chart appVersion.
+    tag: *tag
+  imagePullSecrets: []
+  container:
+    name: kafka-container
+
+  # nameOverride can be set to override the name
+  # of the Helm release during a chart deployment
+  nameOverride: ""
+
+  # nodeSelector can be set to override the node selection
+  nodeSelector: {}
+
+  # ports for the pods and service
+  ports:
+    # Prometheus port for JMX metrics
+    - name: prometheus
+      port: 9000
+
+  # the below `replicaCount` represents
+  # the number of replicas in the StatefulSet
+  replicaCount: 2
+
+  resources: {}
+    # We usually recommend not to specify default resources and to leave this as a conscious
+    # choice for the user. This also increases chances charts run on environments with little
+    # resources, such as Minikube. If you do want to specify resources, uncomment the following
+    # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
+    # limits:
+    #   cpu: 100m
+    #   memory: 128Mi
+    # requests:
+    #   cpu: 100m
+    #   memory: 128Mi
+
+  # mandatory hardening - must be set to disable root user in the container
+  # kafka is running as user kafka (1001:1001)
+  securityContext:
+    runAsNonRoot: true
+    fsGroup: 1001
+    runAsUser: 1001
+    runAsGroup: 1001
+
+  # Service definition with labels and JMX metrics annotations
+  #
+  # The following is an example of a service definition.
+  service:
+    name: *service
+    labels:
+      app: *service
+    #  Annotations to add to the service
+    #  e.g. to enable JMX metrics via Prometheus
+    annotations:
+      prometheus.io/scrape: "true"
+      prometheus.io/port: "9000"
+    type: ClusterIP
+    selector:
+      app: *label
+
+  # Specifies whether a service account should be created
+  serviceAccount:
+    create: false
+    name: "kafka-controller-sa"
+    # Automatically mount a ServiceAccount's API credentials?
+    automount: true
+    # Annotations to add to the service account
+    annotations: {}
+    labels:
+      app: *service
+
+  rbac:
+    create: false
+    # Whether to create & use RBAC resources or not
+    # binding Kafka ServiceAccount to a role
+    # that allows Kafka pods querying the K8s API
+    # Annotations to add to the service account
+    annotations: {}
+    # The name of the service account to use.
+    # If not set and create is true, a name is generated using the fullname template
+    name: "kafka-controller-rbac"
+    apiGroups:
+      - "stable.example.com"
+    resources:
+      - "service"
+      - "pods"
+    verbs:
+      - get
+      - list
+      - watch
+
+  tolerations: []
+    # - effect: NoSchedule
+    #   key: node-role.kubernetes.io/master
+    #   operator: Exists
+    # - effect: NoSchedule
+    #   key: node-role.kubernetes.io/control-plane
+    #   operator: Exists
+
+  volumeMounts:
+    - name: &volumename kafka-storage-data
+      mountPath: /mnt/kafka
+
+  # volumeClaimTemplates for the volumeMounts
+  volumeClaimTemplates:
+    - name: *volumename
+      accessModes: ReadWriteOnce
+      storage: 100Gi
+      # resources:
+      #   requests:
+      #     storage: 100Gi
+
+
+# --------------------------------------------------------------------------------------------------------------------------------------- #
+# Kafka Connect
+# --------------------------------------------------------------------------------------------------------------------------------------- #
+
 connect:
   enabled: true
 
   env:
     REPLICAS: 3
-    SERVICE: &service-connect kafka-connect-svc
+    SERVICE: *service
+    SERVICE_CONNECT: &service-connect kafka-connect-svc
     NAMESPACE: *namespace
-    DEBUG: 'true'
+    DEBUG: 'false'
+    KEY_CONVERTER: org.apache.kafka.connect.json.JsonConverter
+    VALUE_CONVERTER: org.apache.kafka.connect.json.JsonConverter
+    KEY_CONVERTER_SCHEMAS_ENABLE: true
+    VALUE_CONVERTER_SCHEMAS_ENABLE: true
+    OFFSET_STORAGE_REPLICATION_FACTOR: 3
+    OFFSET_STORAGE_PARTITIONS: 25
+    STATUS_STORAGE_REPLICATION_FACTOR: 3
+    STATUS_STORAGE_PARTITIONS: 5
+    OFFSET_STORAGE_CLEANUP_POLICY: compact
+    LISTENERS: "HTTP://:8083"
+    PLUGIN_PATH: "/opt/kafka/libs"
 
   name: kafka-connect
   namespace: *namespace
   labels:
     app: &label-connect kafka-connect
   image:
-    repository: kafkakraft/kafka-connect
-    pullPolicy: IfNotPresent
+    repository: ccpazreg001.azurecr.io/kafkakraft_connect_poc
+    pullPolicy: Always
     # Overrides the image tag whose default is the chart appVersion.
-    tag: "3.6.0"
+    tag: *tag
   imagePullSecrets: []
   container:
     name: kafka-connect-container
