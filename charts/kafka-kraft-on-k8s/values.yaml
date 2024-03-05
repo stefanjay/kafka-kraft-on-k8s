@@ -362,7 +362,7 @@ connect:
   labels:
     app: &label-connect kafka-connect
   image:
-    repository: ccpazreg001.azurecr.io/kafkakraft_connect_poc
+    repository: kafkakraft/kafka-connect
     pullPolicy: Always
     # Overrides the image tag whose default is the chart appVersion.
     tag: *tag
