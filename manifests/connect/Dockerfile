@@ -1,7 +1,7 @@
 # kafka-kraft-on-k8s/manifests/connect/Dockerfile
 FROM eclipse-temurin:21-jdk-jammy
 
-ENV KAFKA_VERSION=3.6.1
+ENV KAFKA_VERSION=3.7.0
 ENV SCALA_VERSION=2.13
 ENV KAFKA_HOME=/opt/kafka
 ENV PATH=${PATH}:${KAFKA_HOME}/bin
