@@ -33,6 +33,13 @@ jobs:
           file: ./manifests/kafka/Dockerfile
           tags: kafkakraft/kafkakraft:latest
 
+      - name: DryRun docker build and push for Kafka Controller in ./
+        uses: docker/build-push-action@v3
+        with:
+          push: false
+          file: ./manifests/controller/Dockerfile
+          tags: kafkakraft/kafka-controller:latest
+
       - name: DryRun docker build and push for Kafka-Connect in ./kafka-connect
         uses: docker/build-push-action@v3
         with:
