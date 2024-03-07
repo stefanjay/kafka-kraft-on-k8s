@@ -17,20 +17,42 @@ More info can be found in the official Apache Kafka docs https://kafka.apache.or
 
 ## News
 
-#### Helm Chart released
+#### 07 Mar 2024 - KafkaKRaft deployment options
+- Server mode (process.roles = broker, controller)
+- Broker and Controller mode ((process.roles = broker) deploys a broker cluster and a controller cluster)
+- Connect mode (100% dynamic)
+
+#### 26 Oct 2023 - Helm Chart released
 - chart is available via Helm Repo -> https://stefanjay.github.io/kafka-kraft-on-k8s/
-  
-#### Public DockerHub Imageregistry
+
+## Public DockerHub Imageregistry
 - https://hub.docker.com/r/kafkakraft/kafkakraft
 
 ## Table of Content
-- [Helm Chart released](#helm-chart-released)
 - [Kafka KRaft on Kubernetes Helm Chart (K4C)](#kafka-kraft-on-kubernetes-helm-chart-k4c)
+  - [News](#news)
+      - [07 Mar 2024 - KafkaKRaft deployment options](#07-mar-2024---kafkakraft-deployment-options)
+      - [26 Oct 2023 - Helm Chart released](#26-oct-2023---helm-chart-released)
   - [Public DockerHub Imageregistry](#public-dockerhub-imageregistry)
   - [Table of Content](#table-of-content)
   - [Author](#author)
   - [Benefits](#benefits)
-  - [Changelog](#changelog)
+- [Changelog](#changelog)
+      - [\[v1.0.2\]](#v102)
+      - [\[v1.0.1\]](#v101)
+      - [\[v1.0.0\]](#v100)
+      - [\[v0.7b\]](#v07b)
+      - [\[v0.7a\]](#v07a)
+      - [\[v0.7\]](#v07)
+      - [\[v0.6\]](#v06)
+      - [\[v0.5a\]](#v05a)
+      - [\[v0.5\]](#v05)
+      - [\[v0.4a\]](#v04a)
+      - [\[v0.4\]](#v04)
+      - [\[v0.3\]](#v03)
+      - [\[v0.2\]](#v02)
+      - [\[v0.1\]](#v01)
+    - [Donations are very welcome, this will motivate to sleep less and code harder :3  -- ](#donations-are-very-welcome-this-will-motivate-to-sleep-less-and-code-harder-3-----)
 ---
 
 ## Author
@@ -41,7 +63,7 @@ Stefan Jährling @ System Vertrieb Alexander GmbH
 ## Benefits
 
 * Helm Chart (feat: RBAC, SA, HPA, AS)
-- featuring a StatefulSet
+- featuring StatefulSets
 - clustered with at least 3 nodes
 - Kafka logdata on persistent volume /node
 - environment variables in manifest
@@ -50,6 +72,12 @@ Stefan Jährling @ System Vertrieb Alexander GmbH
 - runs in any containerized environment
 
 # Changelog
+
+#### [v1.0.2]
+- fixed Kafka Connect to be fully dynamic
+- added KRaft controller
+- added Broker process.roles
+- added several parameters to values.yaml for flexibility
 
 #### [v1.0.1]
 - Minor fix (package version, image name in values.yaml)

@@ -12,15 +12,22 @@ global:
 
 # --------------------------------------------------------------------------------------------------------------------------------------- #
 # Kafka KRaft
+#
+# See: https://kafka.apache.org/documentation/#kafkakraft
 # --------------------------------------------------------------------------------------------------------------------------------------- #
 
 kafka:
   enabled: true
 
   env:
-    PROCESS_ROLES: 'broker, controller'
-    REPLICAS: 3
+    PROCESS_ROLES: 'broker' # Must be equal to either 'broker' OR 'broker, controller'. # broker node.ids = {id + 3}, empty == ZooKeeper mode NOT integrated
+    REPLICAS: &kafka_replicas 3
     SERVICE: &service kafka-svc
+    CONTROLLER_SERVICE: &controller-service controller-svc
+    CONTROLLER_REPLICAS: *kafka_replicas
+    CONTROLLER_LISTENER_NAMES: &controller-listener-names CONTROLLER
+    CONTROLLER_LISTENER_SECURITY_PROTOCOL_MAP: &controller-listener-security-protocol-map CONTROLLER:PLAINTEXT,PLAINTEXT:PLAINTEXT,JMX:PLAINTEXT,SSL:SSL,SASL_PLAINTEXT:SASL_PLAINTEXT,SASL_SSL:SASL_SSL
+    INTER_BROKER_LISTENER_NAME: &inter-broker-listener-name PLAINTEXT
     NAMESPACE: &namespace kafka-test
     SHARE_DIR: /mnt/kafka
     # $ kafka-storage.sh random-uuid # 16 bytes
@@ -98,13 +105,16 @@ kafka:
     # Kafka port for data streaming
     - name: kafka
       port: 9092
+    # Controller port
+    - name: controller
+      port: 9093
     # Prometheus port for JMX metrics
     - name: prometheus
       port: 9000
 
   # the below `replicaCount` represents
   # the number of replicas in the StatefulSet
-  replicaCount: 3
+  replicaCount: *kafka_replicas
 
   resources: {}
     # We usually recommend not to specify default resources and to leave this as a conscious
@@ -198,33 +208,37 @@ kafka:
 
 # --------------------------------------------------------------------------------------------------------------------------------------- #
 # Kafka Controller
+#
+# see https://kafka.apache.org/documentation/#kraft
 # --------------------------------------------------------------------------------------------------------------------------------------- #
-# TODO --> add possiblity to choose kafka node type (controller, broker)
 
 controller:
-  enabled: false
+  enabled: true
 
   env:
-    PROCESS_ROLES: controller
-    REPLICAS: 2
+    PROCESS_ROLES: controller #! Should be always 'controller'. Don´t change that until you know what you do.
+    CONTROLLER_REPLICAS: *kafka_replicas # matches the replicaCount of Kafka
     SERVICE: *service
+    CONTROLLER_SERVICE: *controller-service
+    CONTROLLER_LISTENER_NAMES: *controller-listener-names
+    CONTROLLER_LISTENER_SECURITY_PROTOCOL_MAP: *controller-listener-security-protocol-map
     NAMESPACE: *namespace
     SHARE_DIR: /mnt/kafka
     CLUSTER_ID: *clusterid
-    DEBUG: 'false'
+    DEBUG: false
 
   name: controller
   namespace: *namespace
   labels:
-    app: &label kafkakraft-controller
+    app: &controller-label controller
   image:
-    repository: kafkakraft/kafkakraft
+    repository: kafkakraft/kafka-controller
     pullPolicy: IfNotPresent
     # Overrides the image tag whose default is the chart appVersion.
     tag: *tag
   imagePullSecrets: []
   container:
-    name: kafka-container
+    name: controller-container
 
   # nameOverride can be set to override the name
   # of the Helm release during a chart deployment
@@ -235,13 +249,16 @@ controller:
 
   # ports for the pods and service
   ports:
+    # Controller port
+    - name: controller
+      port: 9093
     # Prometheus port for JMX metrics
     - name: prometheus
       port: 9000
 
   # the below `replicaCount` represents
   # the number of replicas in the StatefulSet
-  replicaCount: 2
+  replicaCount: *kafka_replicas
 
   resources: {}
     # We usually recommend not to specify default resources and to leave this as a conscious
@@ -267,9 +284,9 @@ controller:
   #
   # The following is an example of a service definition.
   service:
-    name: *service
+    name: *controller-service
     labels:
-      app: *service
+      app: *controller-service
     #  Annotations to add to the service
     #  e.g. to enable JMX metrics via Prometheus
     annotations:
@@ -277,18 +294,18 @@ controller:
       prometheus.io/port: "9000"
     type: ClusterIP
     selector:
-      app: *label
+      app: *controller-label
 
   # Specifies whether a service account should be created
   serviceAccount:
     create: false
-    name: "kafka-controller-sa"
+    name: "controller-sa"
     # Automatically mount a ServiceAccount's API credentials?
     automount: true
     # Annotations to add to the service account
     annotations: {}
     labels:
-      app: *service
+      app: *controller-service
 
   rbac:
     create: false
@@ -299,7 +316,7 @@ controller:
     annotations: {}
     # The name of the service account to use.
     # If not set and create is true, a name is generated using the fullname template
-    name: "kafka-controller-rbac"
+    name: "controller-rbac"
     apiGroups:
       - "stable.example.com"
     resources:
@@ -340,9 +357,9 @@ connect:
   enabled: true
 
   env:
-    REPLICAS: 3
+    REPLICAS: &connect_replicas 3
     SERVICE: *service
-    SERVICE_CONNECT: &service-connect kafka-connect-svc
+    SERVICE_CONNECT: &service-connect connect-svc
     NAMESPACE: *namespace
     DEBUG: 'false'
     KEY_CONVERTER: org.apache.kafka.connect.json.JsonConverter
@@ -357,18 +374,18 @@ connect:
     LISTENERS: "HTTP://:8083"
     PLUGIN_PATH: "/opt/kafka/libs"
 
-  name: kafka-connect
+  name: connect
   namespace: *namespace
   labels:
-    app: &label-connect kafka-connect
+    app: &label-connect connect
   image:
     repository: kafkakraft/kafka-connect
-    pullPolicy: Always
+    pullPolicy: IfNotPresent
     # Overrides the image tag whose default is the chart appVersion.
     tag: *tag
   imagePullSecrets: []
   container:
-    name: kafka-connect-container
+    name: connect-container
 
   hpa:
     enabled: false
@@ -413,7 +430,7 @@ connect:
 
   # the below `replicaCount` represents
   # the number of replicas in the StatefulSet
-  replicaCount: 3
+  replicaCount: *connect_replicas
 
   resources: {}
     # We usually recommend not to specify default resources and to leave this as a conscious
@@ -443,7 +460,7 @@ connect:
   # Specifies whether a service account should be created
   serviceAccount:
     create: false
-    name: "kafka-connect-sa"
+    name: "connect-sa"
     # Automatically mount a ServiceAccount's API credentials?
     automount: true
     # Annotations to add to the service account
@@ -460,7 +477,7 @@ connect:
     annotations: {}
     # The name of the service account to use.
     # If not set and create is true, a name is generated using the fullname template
-    name: "kafka-connect-rbac"
+    name: "connect-rbac"
     apiGroups:
       - "stable.example.com"
     resources:

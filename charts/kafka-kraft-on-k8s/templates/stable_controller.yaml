@@ -1,0 +1,100 @@
+{{- if .Values.controller.enabled }}
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: {{ .Values.controller.name }}
+  labels:
+    {{- range $key, $value := .Values.controller.labels }}
+    {{ $key }}: {{ $value }}
+    {{- end }}
+  namespace: {{ .Values.controller.namespace }}
+spec:
+  selector:
+    matchLabels:
+      {{- range $key, $value := .Values.controller.labels }}
+      {{ $key }}: {{ $value }}
+      {{- end }}
+  serviceName: {{ .Values.controller.service.name }}
+  replicas: {{ .Values.controller.replicaCount }}
+  template:
+    metadata:
+      labels:
+        {{- range $key, $value := .Values.controller.labels }}
+        {{ $key }}: {{ $value }}
+        {{- end }}
+    spec:
+      nodeSelector:
+        {{- range $key, $value := .Values.controller.nodeSelector }}
+        {{ $key }}: {{ $value }}
+        {{- end }}
+      securityContext:
+        {{- range $key, $value := .Values.controller.securityContext }}
+        {{ $key }}: {{ $value }}
+        {{- end }}
+      tolerations:
+        {{- range .Values.controller.tolerations }}
+        - effect: {{ .effect }}
+          key: {{ .key }}
+          operator: {{ .operator }}
+        {{- end }}
+      imagePullSecrets:
+        {{- range .Values.controller.imagePullSecrets }}
+        - name: {{ . }}
+        {{- end }}
+      containers:
+        - name: {{ .Values.controller.container.name }}
+          env:
+            {{- range $name, $value := .Values.controller.env }}
+            - name: {{ $name | quote }}
+              value: {{ $value | quote }}
+            {{- end }}
+          image: {{ .Values.controller.image.repository }}:{{ .Values.controller.image.tag }}
+          imagePullPolicy: {{ .Values.controller.image.pullPolicy }}
+          ports:
+            {{- range .Values.controller.ports }}
+            - name: {{ .name }}
+              containerPort: {{ .port }}
+            {{- end }}
+          {{- range $port := .Values.controller.ports }}
+            {{- if eq $port.name "controller" }}
+          livenessProbe:
+            tcpSocket:
+              port: {{ $port.port }}
+            initialDelaySeconds: 5
+            periodSeconds: 3
+          readinessProbe:
+            tcpSocket:
+              port: {{ $port.port }}
+            initialDelaySeconds: 5
+            periodSeconds: 3
+            {{- end }}
+          {{- end }}
+          resources:
+            {{- if .Values.controller.resources.limits }}
+            limits:
+              cpu: {{ .Values.controller.resources.limits.cpu }}
+              memory: {{ .Values.controller.resources.limits.memory }}
+            {{- end }}
+            {{- if .Values.controller.resources.requests }}
+            requests:
+              cpu: {{ .Values.controller.resources.requests.cpu }}
+              memory: {{ .Values.controller.resources.requests.memory }}
+            {{- end }}
+          volumeMounts:
+            {{- range .Values.controller.volumeMounts }}
+            - name: {{ .name | quote }}
+              mountPath: {{ .mountPath }}
+            {{- end }}
+
+  volumeClaimTemplates:
+    {{- range .Values.controller.volumeClaimTemplates }}
+    - metadata:
+        name: {{ .name | quote }}
+      spec:
+        accessModes:
+          - {{ .accessModes }}
+        resources:
+          requests:
+            storage: {{ .storage }}
+    {{- end }}
+{{- end }}
