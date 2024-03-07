@@ -2,7 +2,7 @@ name: Update Kafka Version Table
 
 on:
   schedule:
-    - cron: '00 21 * * */1'
+    - cron: '0 21 * * *' # Runs every day at 21:00 UTC
 
 jobs:
   update_security_md:
@@ -13,32 +13,36 @@ jobs:
         uses: actions/checkout@v2
 
       - name: Get Kafka versions
+        id: get_versions
         run: |
           versions=$(curl -s https://downloads.apache.org/kafka/ | grep -oP 'href="\K[^"]+' | grep -E '^[0-9]+\.[0-9]+\.[0-9]+/' | sort -rV | sed 's/\/$//')
-          echo "| Version | Supported     |" > table.md
-          echo "| ------- | -------------- |" >> table.md
-          while read -r line; do
-            if curl --output /dev/null --silent --head --fail "https://downloads.apache.org/kafka/$line/"; then
-              echo "| $line | :white_check_mark: |" >> table.md
+          echo "::set-output name=versions::$versions"
+
+      - name: Generate version table
+        run: |
+          versions=${{ steps.get_versions.outputs.versions }}
+          echo "| Version | Supported   |" > table.md
+          echo "| ------- | ------------ |" >> table.md
+          for version in $versions; do
+            if curl --output /dev/null --silent --head --fail "https://downloads.apache.org/kafka/$version/"; then
+              echo "| $version | :white_check_mark: |" >> table.md
             else
-              echo "| $line | :x:              |" >> table.md
+              echo "| $version | :x:            |" >> table.md
             fi
-          done <<< "$versions"
+          done
 
       - name: Update SECURITY.md
         run: |
-          sed -i -e '/| Version | Supported   |/,$ d' SECURITY.md
-          sed -i '/| Version | Supported   |/r table.md' SECURITY.md
-          rm table.md
+          table=$(<table.md)
+          awk -v table="$table" '/\| Version \| Supported/ {print; print table; next}1' SECURITY.md > SECURITY.md.new
+          mv SECURITY.md.new SECURITY.md
 
       - name: Commit changes
-        env:
-          ACCESS_TOKEN: ${{ secrets.gh-action-security-md }}
         run: |
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"
           git add SECURITY.md
-          if ! git diff-index --quiet HEAD --; then
+          if ! git diff --staged --quiet; then
             git commit -m "Update Kafka version table - GH Action Pipeline run"
             git push
           else
