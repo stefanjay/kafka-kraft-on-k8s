@@ -33,6 +33,13 @@ jobs:
           push: true
           tags: kafkakraft/kafkakraft:latest
 
+      - name: Build and push KafkaKRaft
+        uses: docker/build-push-action@v3
+        with:
+          file: ./manifests/controller/Dockerfile
+          push: true
+          tags: kafkakraft/kafka-controller:latest
+
       - name: Build and push Kafka-Connect
         uses: docker/build-push-action@v3
         with:
