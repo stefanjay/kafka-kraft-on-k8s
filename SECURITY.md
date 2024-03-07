@@ -5,16 +5,15 @@
 The below list reflects the actual active maintained Apache Kafka versions.
 For the project Kafka KRaft on K8s, the versions below will be supported.
 
-| Version | Supported     |
+
 | Version | Supported   |
 | ------- | ------------ |
 | 3.7.0 | :white_check_mark: |
-| ------- | ------------------ |
-| 3.6.0  | :white_check_mark: |
-| 3.5.1  | :white_check_mark: |
-| 3.5.0  | :white_check_mark: |
-| 3.4.1  | :white_check_mark: |
-| < 3.4.0  | :x:                |
+| 3.6.1  | :white_check_mark: |
+| 3.5.2  | :white_check_mark: |
+| 3.5.0  | :x:                |
+| 3.4.1  | :x:                |
+| 3.4.0  | :x:                |
 
 ## Reporting a Vulnerability
 
