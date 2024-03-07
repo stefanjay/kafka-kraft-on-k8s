@@ -37,7 +37,7 @@ More info can be found in the official Apache Kafka docs https://kafka.apache.or
   - [Table of Content](#table-of-content)
   - [Author](#author)
   - [Benefits](#benefits)
-- [Changelog](#changelog)
+  - [Changelog](#changelog)
       - [\[v1.0.2\]](#v102)
       - [\[v1.0.1\]](#v101)
       - [\[v1.0.0\]](#v100)
@@ -52,7 +52,7 @@ More info can be found in the official Apache Kafka docs https://kafka.apache.or
       - [\[v0.3\]](#v03)
       - [\[v0.2\]](#v02)
       - [\[v0.1\]](#v01)
-    - [Donations are very welcome, this will motivate to sleep less and code harder :3  -- ](#donations-are-very-welcome-this-will-motivate-to-sleep-less-and-code-harder-3-----)
+  - [Donations are very welcome, this will motivate to sleep less and code harder :3  -- ](#donations-are-very-welcome-this-will-motivate-to-sleep-less-and-code-harder-3-----)
 ---
 
 ## Author
