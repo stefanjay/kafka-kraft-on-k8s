@@ -1,7 +1,5 @@
 #!/bin/bash
 
-CNF=/opt/kafka/config/connect-distributed.properties
-
 sed -e "s+^bootstrap.servers=.*+bootstrap.servers=$SERVICE.$NAMESPACE.svc:9092+" \
     -e "s+^key.converter=.*+key.converter=$KEY_CONVERTER+" \
     -e "s+^value.converter=.*+value.converter=$VALUE_CONVERTER+" \
@@ -14,7 +12,7 @@ sed -e "s+^bootstrap.servers=.*+bootstrap.servers=$SERVICE.$NAMESPACE.svc:9092+"
     -e "s+^status.storage.partitions=.*+status.storage.partitions=$STATUS_STORAGE_PARTITIONS+" \
     -e "s+^listeners=.*+listeners=$LISTENERS+" \
     -e "s+^plugin.path=.*+plugin.path=$PLUGIN_PATH+" \
-    $CNF > $CNF.updated \
-    && mv $CNF.updated $CNF
+    /opt/kafka/config/connect-distributed.properties > /opt/kafka/config/connect-distributed.properties.updated \
+    && mv /opt/kafka/config/connect-distributed.properties.updated /opt/kafka/config/connect-distributed.properties
 
-exec connect-distributed.sh $CNF
+exec connect-distributed.sh /opt/kafka/config/connect-distributed.properties

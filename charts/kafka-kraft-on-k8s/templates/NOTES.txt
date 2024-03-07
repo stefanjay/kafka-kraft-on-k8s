@@ -1,9 +1,26 @@
 Congratulations! The chart has been successfully deployed.
 
 The following apps are live:
-{{- if .Values.kafka.enabled }}
-- Kafka KRaft {{ .Values.kafka.image.tag }}
+
+{{- if and .Values.kafka.enabled }}
+- Kafka KRaft
+  -- nodes: {{ .Values.kafka.replicaCount }}
+  -- process.roles: {{ .Values.kafka.env.PROCESS_ROLES }}
+  -- version: {{ .Values.kafka.image.tag }}
+{{- "\n" }}
+{{- end}}
+
+{{- if .Values.controller.enabled }}
+- Kafka Controller
+  -- nodes: {{ .Values.controller.replicaCount }}
+  -- process.roles: {{ .Values.controller.env.PROCESS_ROLES }}
+  -- version: {{ .Values.controller.image.tag }}
+{{- "\n" }}
 {{- end }}
+
 {{- if .Values.connect.enabled }}
-- Kafka Connect {{ .Values.connect.image.tag }}
+- Kafka Connect
+  -- nodes: {{ .Values.connect.replicaCount }}
+  -- version: {{ .Values.connect.image.tag }}
+{{- "\n" }}
 {{- end }}

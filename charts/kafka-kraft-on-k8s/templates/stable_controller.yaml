@@ -1,62 +1,62 @@
-{{- if .Values.kafka.enabled }}
+{{- if .Values.controller.enabled }}
 apiVersion: apps/v1
 kind: StatefulSet
 metadata:
-  name: {{ .Values.kafka.name }}
+  name: {{ .Values.controller.name }}
   labels:
-    {{- range $key, $value := .Values.kafka.labels }}
+    {{- range $key, $value := .Values.controller.labels }}
     {{ $key }}: {{ $value }}
     {{- end }}
-  namespace: {{ .Values.kafka.namespace }}
+  namespace: {{ .Values.controller.namespace }}
 spec:
   selector:
     matchLabels:
-      {{- range $key, $value := .Values.kafka.labels }}
+      {{- range $key, $value := .Values.controller.labels }}
       {{ $key }}: {{ $value }}
       {{- end }}
-  serviceName: {{ .Values.kafka.service.name }}
-  replicas: {{ .Values.kafka.replicaCount }}
+  serviceName: {{ .Values.controller.service.name }}
+  replicas: {{ .Values.controller.replicaCount }}
   template:
     metadata:
       labels:
-        {{- range $key, $value := .Values.kafka.labels }}
+        {{- range $key, $value := .Values.controller.labels }}
         {{ $key }}: {{ $value }}
         {{- end }}
     spec:
       nodeSelector:
-        {{- range $key, $value := .Values.kafka.nodeSelector }}
+        {{- range $key, $value := .Values.controller.nodeSelector }}
         {{ $key }}: {{ $value }}
         {{- end }}
       securityContext:
-        {{- range $key, $value := .Values.kafka.securityContext }}
+        {{- range $key, $value := .Values.controller.securityContext }}
         {{ $key }}: {{ $value }}
         {{- end }}
       tolerations:
-        {{- range .Values.kafka.tolerations }}
+        {{- range .Values.controller.tolerations }}
         - effect: {{ .effect }}
           key: {{ .key }}
           operator: {{ .operator }}
         {{- end }}
       imagePullSecrets:
-        {{- range .Values.kafka.imagePullSecrets }}
+        {{- range .Values.controller.imagePullSecrets }}
         - name: {{ . }}
         {{- end }}
       containers:
-        - name: {{ .Values.kafka.container.name }}
+        - name: {{ .Values.controller.container.name }}
           env:
-            {{- range $name, $value := .Values.kafka.env }}
+            {{- range $name, $value := .Values.controller.env }}
             - name: {{ $name | quote }}
               value: {{ $value | quote }}
             {{- end }}
-          image: {{ .Values.kafka.image.repository }}:{{ .Values.kafka.image.tag }}
-          imagePullPolicy: {{ .Values.kafka.image.pullPolicy }}
+          image: {{ .Values.controller.image.repository }}:{{ .Values.controller.image.tag }}
+          imagePullPolicy: {{ .Values.controller.image.pullPolicy }}
           ports:
-            {{- range .Values.kafka.ports }}
+            {{- range .Values.controller.ports }}
             - name: {{ .name }}
               containerPort: {{ .port }}
             {{- end }}
-          {{- range $port := .Values.kafka.ports }}
-            {{- if eq $port.name "kafka" }}
+          {{- range $port := .Values.controller.ports }}
+            {{- if eq $port.name "controller" }}
           livenessProbe:
             tcpSocket:
               port: {{ $port.port }}
@@ -70,24 +70,24 @@ spec:
             {{- end }}
           {{- end }}
           resources:
-            {{- if .Values.kafka.resources.limits }}
+            {{- if .Values.controller.resources.limits }}
             limits:
-              cpu: {{ .Values.kafka.resources.limits.cpu }}
-              memory: {{ .Values.kafka.resources.limits.memory }}
+              cpu: {{ .Values.controller.resources.limits.cpu }}
+              memory: {{ .Values.controller.resources.limits.memory }}
             {{- end }}
-            {{- if .Values.kafka.resources.requests }}
+            {{- if .Values.controller.resources.requests }}
             requests:
-              cpu: {{ .Values.kafka.resources.requests.cpu }}
-              memory: {{ .Values.kafka.resources.requests.memory }}
+              cpu: {{ .Values.controller.resources.requests.cpu }}
+              memory: {{ .Values.controller.resources.requests.memory }}
             {{- end }}
           volumeMounts:
-            {{- range .Values.kafka.volumeMounts }}
+            {{- range .Values.controller.volumeMounts }}
             - name: {{ .name | quote }}
               mountPath: {{ .mountPath }}
             {{- end }}
 
   volumeClaimTemplates:
-    {{- range .Values.kafka.volumeClaimTemplates }}
+    {{- range .Values.controller.volumeClaimTemplates }}
     - metadata:
         name: {{ .name | quote }}
       spec:

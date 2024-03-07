@@ -1,0 +1,20 @@
+{{- if .Values.controller.rbac.create }}
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  namespace: {{ .Values.controller.namespace }}
+  name: {{ .Values.controller.rbac.name }}
+rules:
+  {{- with .Values.controller.rbac.apiGroups }}
+  - apiGroups:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+    {{- with .Values.controller.rbac.resources }}
+    resources:
+      {{- toYaml . | nindent 4 }}
+    {{- end }}
+    {{- with .Values.controller.rbac.verbs }}
+    verbs:
+      {{- toYaml . | nindent 4 }}
+    {{- end }}
+{{- end }}
