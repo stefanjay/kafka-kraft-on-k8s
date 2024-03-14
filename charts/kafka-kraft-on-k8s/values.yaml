@@ -4,40 +4,64 @@ global:
   notes:
     enabled: true
 
-
-#
-# Warning:  ! ENVs are mandatory and hard defined in the entrypoint.sh on image build level.
-#
-
-
 # --------------------------------------------------------------------------------------------------------------------------------------- #
 # Kafka KRaft
 #
-# See: https://kafka.apache.org/documentation/#kafkakraft
+# See: https://kafka.apache.org/documentation/#kraft
 # --------------------------------------------------------------------------------------------------------------------------------------- #
 
 kafka:
   enabled: true
 
+  configmap:
+    enabled: true # switch to enable kafka properties via configmap
+    name: &kafka-properties-cm kafka-properties-cm
+
+    properties:
+      service: &kafka-service kafka-svc
+      controllerService: &controller-service controller-svc
+      namespace: &namespace kafka-test
+      brokerReplicas: &kafka_replicas 3
+      #
+      processRoles: &process-roles broker # "broker" or "broker,controller"
+      clusterId: &clusterid QwjfU6MPQ_CMdFsbCx7EGg
+      autoCreateTopicsEnable: &auto-create-topics-enable true
+      logdirs: &logdirs /mnt/kafka  # "/mnt/kafka" -> no trailing slash
+      #
+      interBrokerListenerName: &inter-broker-listener-name PLAINTEXT
+      advertisedListeners: &advertised-listeners PLAINTEXT://:9092
+      listeners: &listeners PLAINTEXT://:9092 # ,CONTROLLER://:9093
+      listenersecurityprotocolmap: &listener-security-protocol-map PLAINTEXT:PLAINTEXT,JMX:PLAINTEXT,SSL:SSL,SASL_PLAINTEXT:SASL_PLAINTEXT,SASL_SSL:SASL_SSL
+      #
+      controllerReplicas: *kafka_replicas
+      controllerListenerNames: &controller-listener-names CONTROLLER
+      controllerListenerSecurityProtocolMap: &controller-listener-security-protocol-map CONTROLLER:PLAINTEXT,PLAINTEXT:PLAINTEXT,JMX:PLAINTEXT,SSL:SSL,SASL_PLAINTEXT:SASL_PLAINTEXT,SASL_SSL:SASL_SSL
+      #
+      defaultReplicationFactor: &default-replication-factor 3
+      kafkaNumPartitions: &kafka-num-partitions 8
+
   env:
-    PROCESS_ROLES: 'broker' # Must be equal to either 'broker' OR 'broker, controller'. # broker node.ids = {id + 3}, empty == ZooKeeper mode NOT integrated
-    REPLICAS: &kafka_replicas 3
-    SERVICE: &service kafka-svc
-    CONTROLLER_SERVICE: &controller-service controller-svc
+    DEBUG: false # activates debug mode in the pod which executes a sleeping process for a long time.
+    ENVS_ENABLED: false # necessary switch to enable kafka properties via envs
+    PROCESS_ROLES: *process-roles
+    NODE_ID_OFFSET: 1000 # necessary offset for the node id of the brokers, when broker and controller are splitted into seperate clusters by processRoles. see https://kafka.apache.org/documentation/#kraft
+    REPLICAS: *kafka_replicas
+    SERVICE: *kafka-service
+    ADVERTISED_LISTENERS: *advertised-listeners
+    LISTENERS: *listeners
+    CONTROLLER_SERVICE: *controller-service
     CONTROLLER_REPLICAS: *kafka_replicas
-    CONTROLLER_LISTENER_NAMES: &controller-listener-names CONTROLLER
-    CONTROLLER_LISTENER_SECURITY_PROTOCOL_MAP: &controller-listener-security-protocol-map CONTROLLER:PLAINTEXT,PLAINTEXT:PLAINTEXT,JMX:PLAINTEXT,SSL:SSL,SASL_PLAINTEXT:SASL_PLAINTEXT,SASL_SSL:SASL_SSL
-    INTER_BROKER_LISTENER_NAME: &inter-broker-listener-name PLAINTEXT
-    NAMESPACE: &namespace kafka-test
-    SHARE_DIR: /mnt/kafka
+    CONTROLLER_LISTENER_NAMES: *controller-listener-names
+    CONTROLLER_LISTENER_SECURITY_PROTOCOL_MAP: *controller-listener-security-protocol-map
+    INTER_BROKER_LISTENER_NAME: *inter-broker-listener-name
+    NAMESPACE: *namespace
+    SHARE_DIR: *logdirs
     # $ kafka-storage.sh random-uuid # 16 bytes
     # see docs: https://kafka.apache.org/33/documentation.html#quickstart_startserver
-    CLUSTER_ID: &clusterid QwjfU6MPQ_CMdFsbCx7EGg
-    DEFAULT_REPLICATION_FACTOR: '3'
-    DEFAULT_MIN_INSYNC_REPLICAS: '2'
-    KAFKA_NUM_PARTITIONS: '8'
-    AUTO_CREATE_TOPICS_ENABLE: 'true'
-    DEBUG: 'false'
+    CLUSTER_ID: *clusterid
+    DEFAULT_REPLICATION_FACTOR: *default-replication-factor
+    KAFKA_NUM_PARTITIONS: *kafka-num-partitions
+    AUTO_CREATE_TOPICS_ENABLE: *auto-create-topics-enable
 
   name: kafka
   namespace: *namespace
@@ -46,8 +70,7 @@ kafka:
   image:
     repository: kafkakraft/kafkakraft
     pullPolicy: IfNotPresent
-    # Overrides the image tag whose default is the chart appVersion.
-    tag: &tag "3.6.1"
+    tag: &tag "3.7.0"
   imagePullSecrets: []
   container:
     name: kafka-container
@@ -140,9 +163,9 @@ kafka:
   #
   # The following is an example of a service definition.
   service:
-    name: *service
+    name: *kafka-service
     labels:
-      app: *service
+      app: *kafka-service
     #  Annotations to add to the service
     #  e.g. to enable JMX metrics via Prometheus
     annotations:
@@ -161,7 +184,7 @@ kafka:
     # Annotations to add to the service account
     annotations: {}
     labels:
-      app: *service
+      app: *kafka-service
 
   rbac:
     create: false
@@ -195,6 +218,12 @@ kafka:
   volumeMounts:
     - name: &volumename kafka-storage-data
       mountPath: /mnt/kafka
+    - name: &kafka-properties-cm-vol kafka-properties-cm-vol
+      mountPath: /opt/kafka/config/kraft/properties/
+
+  volumes:
+    - name: *kafka-properties-cm-vol
+      emptyDir: {}
 
   # volumeClaimTemplates for the volumeMounts
   volumeClaimTemplates:
@@ -209,23 +238,44 @@ kafka:
 # --------------------------------------------------------------------------------------------------------------------------------------- #
 # Kafka Controller
 #
-# see https://kafka.apache.org/documentation/#kraft
+# see https://kafka.apache.org/documentation/#brokerconfigs_controller.listener.names
 # --------------------------------------------------------------------------------------------------------------------------------------- #
 
 controller:
   enabled: true
 
+  configmap:
+    enabled: true # switch to enable kafka properties via configmap
+    name: &controller-properties-cm controller-properties-cm
+
+    properties:
+      service: *kafka-service
+      namespace: *namespace
+      #
+      processRoles: &controller-process-roles 'controller' # "broker" or "broker,controller"
+      clusterId: *clusterid
+      #
+      listeners: &controller-listeners CONTROLLER://:9093
+      logdirs: *logdirs # "/mnt/kafka" -> no trailing slash
+      #
+      controllerReplicas: *kafka_replicas
+      controllerService: *controller-service
+      controllerListenerNames: *controller-listener-names
+      controllerListenerSecurityProtocolMap: *controller-listener-security-protocol-map
+
   env:
-    PROCESS_ROLES: controller #! Should be always 'controller'. Don´t change that until you know what you do.
+    DEBUG: false # activates debug mode in the pod which executes a sleeping process for a long time.
+    ENVS_ENABLED: false # necessary switch to enable controller properties via envs
+    PROCESS_ROLES: *controller-process-roles #! Should be always 'controller'. Don't change that until you know what you do.
     CONTROLLER_REPLICAS: *kafka_replicas # matches the replicaCount of Kafka
-    SERVICE: *service
+    SERVICE: *kafka-service
     CONTROLLER_SERVICE: *controller-service
+    CONTROLLER_LISTENERS: *controller-listeners
     CONTROLLER_LISTENER_NAMES: *controller-listener-names
     CONTROLLER_LISTENER_SECURITY_PROTOCOL_MAP: *controller-listener-security-protocol-map
     NAMESPACE: *namespace
-    SHARE_DIR: /mnt/kafka
+    SHARE_DIR: *logdirs
     CLUSTER_ID: *clusterid
-    DEBUG: false
 
   name: controller
   namespace: *namespace
@@ -234,7 +284,6 @@ controller:
   image:
     repository: kafkakraft/kafka-controller
     pullPolicy: IfNotPresent
-    # Overrides the image tag whose default is the chart appVersion.
     tag: *tag
   imagePullSecrets: []
   container:
@@ -337,7 +386,13 @@ controller:
 
   volumeMounts:
     - name: &volumename kafka-storage-data
-      mountPath: /mnt/kafka
+      mountPath: *logdirs
+    - name: &controller-properties-cm-vol controller-properties-cm-vol
+      mountPath: /opt/kafka/config/kraft/properties/
+
+  volumes:
+    - name: *controller-properties-cm-vol
+      emptyDir: {}
 
   # volumeClaimTemplates for the volumeMounts
   volumeClaimTemplates:
@@ -351,28 +406,62 @@ controller:
 
 # --------------------------------------------------------------------------------------------------------------------------------------- #
 # Kafka Connect
+#
+# see https://kafka.apache.org/documentation/#connect
 # --------------------------------------------------------------------------------------------------------------------------------------- #
 
 connect:
   enabled: true
 
+  configmap:
+    enabled: true # switch to enable kafka properties via configmap
+    name: &connect-properties-cm connect-properties-cm
+
+    properties:
+      service: *kafka-service
+      service-connect: &service-connect connect-svc
+      namespace: *namespace
+      #
+      keyConverter: &keyconverter org.apache.kafka.connect.json.JsonConverter
+      keyConverterSchemasEnable: &keyconverterschemasenable true
+      valueConverter: &valueconverter org.apache.kafka.connect.json.JsonConverter
+      valueConverterSchemasEnable: &valueconverterschemasenable true
+      #
+      offsetStorageTopic: connect-offsets
+      offsetFlushIntervalMs: 10000
+      offsetStorageReplicationFactor: &offsetstoragereplicationfactor 3
+      offsetStoragePartitions: &offsetstoragepartitions 25
+      offsetStorageCleanupPolicy: &offsetstoragecleanuppolicy compact
+      #
+      configStorageTopic: connect-configs
+      configStorageReplicationFactor: 1
+      #
+      statusStorageTopic: connect-status
+      statusStorageReplicationFactor: &statusstoragereplicationfactor 3
+      statusStoragePartitions: &statusstoragepartitions 5
+      #
+      groupId: kafka-connect-cluster
+      listeners: &connect-listeners HTTP://:8083
+      pluginPath: &pluginpath /opt/kafka/libs
+
   env:
+    DEBUG: false # activates debug mode in the pod which executes a sleeping process for a long time.
+    ENVS_ENABLED: false # necessary switch to enable connect properties via envs
     REPLICAS: &connect_replicas 3
-    SERVICE: *service
-    SERVICE_CONNECT: &service-connect connect-svc
+    SERVICE: *kafka-service
+    SERVICE_CONNECT: *service-connect
     NAMESPACE: *namespace
-    DEBUG: 'false'
-    KEY_CONVERTER: org.apache.kafka.connect.json.JsonConverter
-    VALUE_CONVERTER: org.apache.kafka.connect.json.JsonConverter
-    KEY_CONVERTER_SCHEMAS_ENABLE: true
-    VALUE_CONVERTER_SCHEMAS_ENABLE: true
-    OFFSET_STORAGE_REPLICATION_FACTOR: 3
-    OFFSET_STORAGE_PARTITIONS: 25
-    STATUS_STORAGE_REPLICATION_FACTOR: 3
-    STATUS_STORAGE_PARTITIONS: 5
-    OFFSET_STORAGE_CLEANUP_POLICY: compact
-    LISTENERS: "HTTP://:8083"
-    PLUGIN_PATH: "/opt/kafka/libs"
+    KEY_CONVERTER: *keyconverter
+    VALUE_CONVERTER: *valueconverter
+    KEY_CONVERTER_SCHEMAS_ENABLE: *keyconverterschemasenable
+    VALUE_CONVERTER_SCHEMAS_ENABLE: *valueconverterschemasenable
+    OFFSET_STORAGE_REPLICATION_FACTOR: *offsetstoragereplicationfactor
+    OFFSET_STORAGE_PARTITIONS: *offsetstoragepartitions
+    STATUS_STORAGE_REPLICATION_FACTOR: *statusstoragereplicationfactor
+    STATUS_STORAGE_PARTITIONS: *statusstoragepartitions
+    OFFSET_STORAGE_CLEANUP_POLICY: *offsetstoragecleanuppolicy
+    LISTENERS: *connect-listeners
+    PLUGIN_PATH: *pluginpath
 
   name: connect
   namespace: *namespace
@@ -381,7 +470,6 @@ connect:
   image:
     repository: kafkakraft/kafka-connect
     pullPolicy: IfNotPresent
-    # Overrides the image tag whose default is the chart appVersion.
     tag: *tag
   imagePullSecrets: []
   container:
@@ -487,3 +575,11 @@ connect:
       - get
       - list
       - watch
+
+  volumeMounts:
+    - name: &connect-properties-cm-vol connect-properties-cm-vol
+      mountPath: /opt/kafka/config/connect/
+
+  volumes:
+    - name: *connect-properties-cm-vol
+      emptyDir: {}

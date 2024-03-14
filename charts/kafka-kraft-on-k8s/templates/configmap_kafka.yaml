@@ -1,0 +1,43 @@
+{{- if and .Values.kafka.enabled .Values.kafka.configmap.enabled (not .Values.kafka.env.ENABLED) }}
+{{- $portsList := .Values.controller.ports }}
+{{- $portMap := index $portsList 0 }}
+{{- $ControllerPort := $portMap.port }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ .Values.kafka.configmap.name }}
+data:
+  {{- $processRoles := .Values.kafka.configmap.properties.processRoles | trim }}
+  {{- if eq $processRoles "broker" }}
+  broker.properties: |-
+    process.roles={{ .Values.kafka.configmap.properties.processRoles }}
+    listeners={{ .Values.kafka.configmap.properties.listeners }}
+    advertised.listeners={{ .Values.kafka.configmap.properties.advertisedListeners }}
+    log.dirs={{ .Values.kafka.configmap.properties.logdirs }}/{{ add .Values.kafka.configmap.properties.nodeIdOffset (int (index (splitList "-" .Release.Name) 0)) }}
+    num.partitions={{ .Values.kafka.configmap.properties.kafkaNumPartitions }}
+    controller.listener.names={{ .Values.kafka.configmap.properties.controllerListenerNames }}
+    inter.broker.listener.name={{ .Values.kafka.configmap.properties.interBrokerListenerName }}
+    listener.security.protocol.map={{ .Values.kafka.configmap.properties.controllerListenerSecurityProtocolMap }}
+    controller.quorum.voters={{ include "kafka.controllerQuorumVoters" . }}
+  {{- else if and (regexMatch "broker" .Values.kafka.configmap.properties.processRoles) (regexMatch "controller" .Values.kafka.configmap.properties.processRoles) }}
+  server.properties: |-
+    process.roles={{ .Values.kafka.configmap.properties.processRoles }}
+    listeners={{ .Values.kafka.configmap.properties.listeners }}
+    advertised.listeners={{ .Values.kafka.configmap.properties.advertisedListeners }}
+    log.dirs={{ .Values.kafka.configmap.properties.logdirs }}/{{ add .Values.kafka.configmap.properties.nodeIdOffset (int (index (splitList "-" .Release.Name) 0)) }}
+    num.partitions={{ .Values.kafka.configmap.properties.kafkaNumPartitions }}
+    default.replication.factor={{ .Values.kafka.configmap.properties.defaultReplicationFactor }}
+    auto.create.topics.enable={{ .Values.kafka.configmap.properties.autoCreateTopicsEnable }}
+    controller.listener.names={{ .Values.kafka.configmap.properties.controllerListenerNames }}
+    inter.broker.listener.name={{ .Values.kafka.configmap.properties.interBrokerListenerName }}
+    listener.security.protocol.map={{ .Values.kafka.configmap.properties.controllerListenerSecurityProtocolMap }}
+    controller.quorum.voters={{ include "kafka.controllerQuorumVotersCombined" . }}
+  {{- end }}
+{{- else }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ .Values.kafka.configmap.name }}
+data:
+  message: "INFO: envs are enabled. properties are not set via configmap."
+{{- end }}

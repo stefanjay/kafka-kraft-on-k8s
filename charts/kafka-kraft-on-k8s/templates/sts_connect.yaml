@@ -3,6 +3,9 @@ apiVersion: apps/v1
 kind: StatefulSet
 metadata:
   name: {{ .Values.connect.name }}
+  annotations:
+    "helm.sh/hook": pre-install
+    "helm.sh/hook-weight": "3"
   labels:
     {{- range $key, $value := .Values.connect.labels }}
     {{ $key }}: {{ $value }}
@@ -80,4 +83,15 @@ spec:
               cpu: {{ .Values.connect.resources.requests.cpu }}
               memory: {{ .Values.connect.resources.requests.memory }}
             {{- end }}
+          volumeMounts:
+            {{- range .Values.connect.volumeMounts }}
+            - name: {{ .name | quote }}
+              mountPath: {{ .mountPath }}
+            {{- end }}
+      volumes:
+        {{- range .Values.connect.volumes }}
+        - name: {{ .name | quote }}
+          configMap:
+            name: {{ $.Values.connect.configmap.name | quote }}
+        {{- end }}
 {{- end }}
