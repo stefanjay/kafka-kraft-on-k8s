@@ -17,6 +17,13 @@ More info can be found in the official Apache Kafka docs https://kafka.apache.or
 
 ## News
 
+#### 14 Mar 2024 - ConfigMaps, new debugmode, minor fixes
+- added feature to configure kafka cluster with helm charts
+- minor fixes
+- added better ability to run the cluster dynamically in broker only mode
+- redesigned debugmode
+
+
 #### 07 Mar 2024 - KafkaKRaft deployment options
 - Server mode (process.roles = broker, controller)
 - Broker and Controller mode ((process.roles = broker) deploys a broker cluster and a controller cluster)
@@ -72,6 +79,12 @@ Stefan Jährling @ System Vertrieb Alexander GmbH
 - runs in any containerized environment
 
 # Changelog
+
+#### [v1.1.0]
+- added feature to configure kafka cluster with helm charts
+- minor fixes
+- added better ability to run the cluster dynamically in broker only mode
+- redesigned debugmode
 
 #### [v1.0.2]
 - fixed Kafka Connect to be fully dynamic
