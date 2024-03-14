@@ -45,6 +45,7 @@ More info can be found in the official Apache Kafka docs https://kafka.apache.or
   - [Author](#author)
   - [Benefits](#benefits)
   - [Changelog](#changelog)
+      - [\[v1.1.0\]](#v110)
       - [\[v1.0.2\]](#v102)
       - [\[v1.0.1\]](#v101)
       - [\[v1.0.0\]](#v100)
