@@ -3,6 +3,9 @@ apiVersion: apps/v1
 kind: StatefulSet
 metadata:
   name: {{ .Values.kafka.name }}
+  annotations:
+    "helm.sh/hook": pre-install
+    "helm.sh/hook-weight": "2"
   labels:
     {{- range $key, $value := .Values.kafka.labels }}
     {{ $key }}: {{ $value }}
@@ -60,13 +63,13 @@ spec:
           livenessProbe:
             tcpSocket:
               port: {{ $port.port }}
-            initialDelaySeconds: 5
-            periodSeconds: 3
+            initialDelaySeconds: 15
+            periodSeconds: 10
           readinessProbe:
             tcpSocket:
               port: {{ $port.port }}
-            initialDelaySeconds: 5
-            periodSeconds: 3
+            initialDelaySeconds: 15
+            periodSeconds: 10
             {{- end }}
           {{- end }}
           resources:
@@ -85,6 +88,12 @@ spec:
             - name: {{ .name | quote }}
               mountPath: {{ .mountPath }}
             {{- end }}
+      volumes:
+        {{- range .Values.kafka.volumes }}
+        - name: {{ .name | quote }}
+          configMap:
+            name: {{ $.Values.kafka.configmap.name | quote }}
+        {{- end }}
 
   volumeClaimTemplates:
     {{- range .Values.kafka.volumeClaimTemplates }}

@@ -3,6 +3,9 @@ apiVersion: apps/v1
 kind: StatefulSet
 metadata:
   name: {{ .Values.controller.name }}
+  annotations:
+    "helm.sh/hook": pre-install
+    "helm.sh/hook-weight": "1"
   labels:
     {{- range $key, $value := .Values.controller.labels }}
     {{ $key }}: {{ $value }}
@@ -85,6 +88,12 @@ spec:
             - name: {{ .name | quote }}
               mountPath: {{ .mountPath }}
             {{- end }}
+      volumes:
+        {{- range .Values.controller.volumes }}
+        - name: {{ .name | quote }}
+          configMap:
+            name: {{ $.Values.controller.configmap.name | quote }}
+        {{- end }}
 
   volumeClaimTemplates:
     {{- range .Values.controller.volumeClaimTemplates }}

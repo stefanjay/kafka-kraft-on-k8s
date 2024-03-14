@@ -1,0 +1,35 @@
+{{- if and .Values.connect.enabled .Values.connect.configmap.enabled (not .Values.connect.env.ENVS_ENABLED) }}
+{{- $portsList := .Values.kafka.ports }}
+{{- $portMap := index $portsList 0 }}
+{{- $KafkaPort := $portMap.port }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ .Values.connect.configmap.name }}
+data:
+  connect-distributed.properties: |-
+    bootstrap.servers={{ .Values.connect.configmap.properties.service }}.{{ .Values.connect.configmap.properties.namespace }}.svc:{{ $KafkaPort }}
+    group.id={{ .Values.connect.configmap.properties.groupId }}
+    key.converter={{ .Values.connect.configmap.properties.keyConverter }}
+    key.converter.schemas.enable={{ .Values.connect.configmap.properties.keyConverterSchemasEnable }}
+    value.converter={{ .Values.connect.configmap.properties.valueConverter }}
+    value.converter.schemas.enable={{ .Values.connect.configmap.properties.valueConverterSchemasEnable }}
+    offset.storage.topic={{ .Values.connect.configmap.properties.offsetStorageTopic }}
+    offset.storage.replication.factor={{ .Values.connect.configmap.properties.offsetStorageReplicationFactor }}
+    offset.storage.partitions={{ .Values.connect.configmap.properties.offsetStoragePartitions }}
+    offset.storage.cleanup.policy={{ .Values.connect.configmap.properties.offsetStorageCleanupPolicy }}
+    config.storage.topic={{ .Values.connect.configmap.properties.configStorageTopic }}
+    config.storage.replication.factor={{ .Values.connect.configmap.properties.configStorageReplicationFactor }}
+    status.storage.topic={{ .Values.connect.configmap.properties.statusStorageTopic }}
+    status.storage.replication.factor={{ .Values.connect.configmap.properties.statusStorageReplicationFactor }}
+    status.storage.partitions={{ .Values.connect.configmap.properties.statusStoragePartitions }}
+    listeners={{ .Values.connect.configmap.properties.listeners }}
+    plugin.path={{ .Values.connect.configmap.properties.pluginPath }}
+{{- else }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ .Values.connect.configmap.name }}
+data:
+  message: "INFO: envs are enabled. properties are not set via configmap."
+{{- end }}

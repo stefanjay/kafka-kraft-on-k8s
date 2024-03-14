@@ -1,0 +1,24 @@
+{{- if and .Values.controller.enabled .Values.controller.configmap.enabled (not .Values.controller.env.ENABLED) }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ .Values.controller.configmap.name }}
+data:
+  {{- $processRoles := .Values.controller.configmap.properties.processRoles | trim }}
+  {{- if eq $processRoles "controller" }}
+  controller.properties: |-
+    process.roles={{ .Values.controller.configmap.properties.processRoles }}
+    log.dirs={{ .Values.controller.configmap.properties.logdirs }}/{{ add .Values.controller.configmap.properties.nodeIdOffset (int (index (splitList "-" .Release.Name) 0)) }}
+    listeners={{ .Values.controller.configmap.properties.listeners }}
+    controller.listener.names={{ .Values.controller.configmap.properties.controllerListenerNames }}
+    controller.listener.security.protocol.map={{ .Values.controller.configmap.properties.controllerListenerSecurityProtocolMap }}
+    controller.quorum.voters={{ include "kafka.controllerQuorumVoters" . }}
+{{- else }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ .Values.controller.configmap.name }}
+data:
+  message: "INFO: envs are enabled. properties are not set via configmap."
+{{- end }}
+{{- end }}
