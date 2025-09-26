@@ -1,5 +1,5 @@
 # kafka-kraft-on-k8s/manifests/kafka/Dockerfile
-FROM eclipse-temurin:21-jdk-jammy
+FROM eclipse-temurin:22-jdk-jammy
 
 ENV KAFKA_VERSION=3.7.0
 ENV SCALA_VERSION=2.13
